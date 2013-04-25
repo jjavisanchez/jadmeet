@@ -1,0 +1,94 @@
+/*
+    Document   : portada
+    Created on : 12-ago-2012, 22:22:14
+    Author     : josejavi14
+    Description:
+        Purpose of the stylesheet follows.
+*/
+@font-face{
+    font-family:'KlavikaBold';
+    src: url(fonts/Klavika-Bold.otf);
+ }
+
+label{font-family: "KlavikaBold"; font-size: 1.3em;color: #666666;}
+#registrate{position:absolute;margin-top: 35px;}
+
+
+/* Centre the page */
+.body {
+    display:block;
+    width:576px;
+}
+
+/* Centre the form within the page */
+form {
+
+    width:459px;
+}
+
+/* Style the text boxes */
+textarea {
+	height:213px;
+	background:#efefef;
+}
+
+
+input, textarea {
+    width:439px;
+    height:27px;
+    background:#efefef;
+    border:3px solid #dedede;
+    padding:10px;
+    margin-top:3px;
+    margin-bottom: 17px;
+    font-size:0.9em;
+    color:#3a3a3a;
+    border-radius:5px;
+    -moz-border-radius:5px;
+    -webkit-border-radius:5px;
+}
+
+
+
+.calendar{
+
+    width: 75px;
+    height: 25px;
+    border:3px solid #dedede;
+    background-color:#efefef;
+    margin-top:3px;
+    margin-bottom: 17px;
+    font-size:0.9em;
+    color:#3a3a3a;
+    border-radius:5px;
+    -moz-border-radius:5px;
+    -webkit-border-radius:5px;
+}
+
+
+input:focus, textarea:focus {
+    border:3px solid #357AE8;
+}
+
+
+/* Syle button. Settings of line-height, font-size, text-indent used to hide submit value in IE */
+#submit {
+    padding-top: 10px;
+    margin-top: 18px;
+    float: right;
+    cursor:pointer;
+    width:140px;
+    height: 47px;
+    line-height:0;
+    font-size:0.9em;
+/*    text-indent:-999px;*/
+    color: white;
+    background: #2AB5E0;
+    border: 3px solid #353535;
+    -moz-border-radius: 2px;
+    -webkit-border-radius: 2px;
+}
+/* Style the search button hover state */
+#submit:hover {
+    background: url(ico-search.png) no-repeat center #218DAF;
+    border: 3px solid #353535;}

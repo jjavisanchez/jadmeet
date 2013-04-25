@@ -1,0 +1,15 @@
+jad_home:
+       pattern:  /{rolusuario}/jad/{nombreJad}
+       defaults: { _controller: JadBundle:Default:menu }
+       options:
+        expose: true
+jad_sesiones:
+       pattern:  /{rolusuario}/jad/{nombreJad}/workshops
+       defaults: { _controller: JadBundle:Default:sesiones }
+jad_sesion:
+       pattern:  /{rolusuario}/jad/{nombreJad}/workshop/{nombreSesion}
+       defaults: { _controller: JadBundle:Default:sesion }
+
+
+
+

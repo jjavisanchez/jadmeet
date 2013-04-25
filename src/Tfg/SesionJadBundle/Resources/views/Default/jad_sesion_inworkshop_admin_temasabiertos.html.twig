@@ -1,0 +1,90 @@
+<div id="TemasAbiertos">
+	        <h2 class="section">Temas Abiertos</h2>
+	        <div id="botones">
+				<a id="mostrarA" class="mostrar button" href="">Mostrar en A</a>
+				<a id="mostrarB" class="mostrar button" href="">Mostrar en B</a>
+				<a id="form" class="button" onclick="mostrarFormNuevoTema()">Nuevo Tema Abierto</a>
+			</div>
+
+			<form id="nuevo_temaAbierto" action="{{path('admin_window_temasAbiertos',{'rolusuario':rol.slug,'nombreJad':jad.slug,'nombreSesion':sesion.slug})}}"" method="POST" {{ form_enctype(form) }}">
+            <fieldset>
+                {{ form_label(form.nombre, 'Nombre') }}
+                {{ form_errors(form.nombre) }}
+                {{ form_widget(form.nombre,{ 'attr':{
+                    'placeholder':'Escribe un nombre para el Tema Abierto'}}) }}
+
+                {{ form_label(form.descripcion, 'Descripción') }}
+                {{ form_errors(form.descripcion) }}
+                {{ form_widget(form.descripcion,{ 'attr':{
+                    'placeholder':'Escribe una descripbión para el Tema Abierto'}}) }}
+
+
+                {{ form_label(form.solucion, 'Solución') }}
+                {{ form_errors(form.solucion) }}
+                {{ form_widget(form.solucion,{ 'attr':{
+                    'placeholder':'Si ya existe una solución o propuesta escribela aquí'}}) }}
+
+                {{ form_label(form.fechaLimite, 'Fecha Límite') }}
+                {{ form_errors(form.fechaLimite) }}
+                {{ form_widget(form.fechaLimite,{ 'attr':{
+                    'placeholder':'Selecciona la fecha límite para resolver el Tema Abierto'}}) }}
+
+                <div class='checkbox'>
+
+                	{{ form_widget(form.finalizado) }}
+	                {{ form_label(form.finalizado, '¿Ha sido resuelto el Tema Abierto?') }}
+	                {{ form_errors(form.finalizado) }}
+
+	            </div>
+
+                {{ form_label(form.usuarios, 'Elige un responsable para el Tema Abierto') }}
+                {{ form_errors(form.usuarios) }}
+                {{ form_widget(form.usuarios) }}
+
+            </fieldset>
+
+             {{form_rest(form)}}
+
+			    <input id="submit" type="submit" value="Crear Tema Abierto" />
+			</form>
+			<div id="lista">
+				<h3 class="subsection">Lista de Temas Abiertos almacenados</h3>
+		        <ol id="temas_abiertos" class="lista_info">
+		        	{% for tema_abierto in temas_abiertos %}
+	                      <li id="tema_abierto_{{ loop.index }}">
+	                          <a id="encabezado_tema_abierto_{{ loop.index }}" class="encabezado arrow bold">{{ tema_abierto.nombre }}</a>
+	                          <a onclick="eliminarTemaAbierto('{{ tema_abierto.id }}')" class='delete'><i class='icon-remove' onmouseover="this.className='icon-remove-sign'" onmouseout="this.className='icon-remove'"></i></a>
+	                          <a id="editar_tema_abierto_{{ loop.index }}" class='edit' onclick="editarTemaAbierto('{{ loop.index }}', '{{ tema_abierto.id }}')"><i id="figure_{{ loop.index }}" class="icon-pencil" onmouseover="this.className='icon-edit'" onmouseout="this.className='icon-pencil'"></i></a>
+	                          <a id="descripcion_tema_abierto_{{ loop.index }}" class="content_list">{{ tema_abierto.descripcion }}</a>
+	                          <a id="encabezado_solucion_tema_abierto_{{ loop.index }}" class="encabezado">Solución</a>
+	                          {% if(tema_abierto.solucion is empty) %}
+	                          	 <a id="solucion_tema_abierto_{{ loop.index }}" class="content_list">No se ha registrado ninguna solución</a>
+	                          {% else %}
+	                          	 <a id="solucion_tema_abierto_{{ loop.index }}" class="content_list">{{ tema_abierto.solucion }}</a>
+	                          {% endif %}
+	                          <a id="encabezado_responsable_tema_abierto_{{ loop.index }}" class="encabezado">Responsable</a>
+	                          <a id="responsable_tema_abierto_{{ loop.index }}" class="content_list">{{ tema_abierto.usuarios[0] }}</a>
+	                          <a id="encabezado_fecha_tema_abierto_{{ loop.index }}" class="encabezado">Fecha Límite</a>
+	                          <a id="fecha_tema_abierto_{{ loop.index }}" class="content_list">{{ tema_abierto.fechaLimite|date("m/d/Y") }}</a>
+	                          <a id="encabezado_resuelto_tema_abierto_{{ loop.index }}" class="encabezado">¿Resuelto?</a>
+	                          {% if(tema_abierto.finalizado) %}
+	                          	<a id="resuelto_tema_abierto_{{ loop.index }}" class="content_list">Si</a>
+	                          {% else %}
+	                          	<a id="resuelto_tema_abierto_{{ loop.index }}" class="content_list">No</a>
+	                          {% endif %}
+	                      </li>
+
+	                {% endfor %}
+		        </ol>
+		    </div>
+</div>
+<div style="clear:both;"></div>
+
+<script type="text/javascript">
+$(document).ready(function(){
+                $(".date").datepicker({ dateFormat: 'dd-mm-yy', changeYear: true, changeMonth: true,  yearRange: '-100:+0'});
+                $(".date").datepicker( "option", "showAnim", "blind" );
+                $("select").selectBoxIt({downArrowIcon: "icon-hand-down"});
+            });
+
+</script>

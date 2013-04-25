@@ -1,0 +1,18 @@
+parameters:
+    database_driver: pdo_mysql
+    database_host: localhost
+    database_port: null
+    database_name: jadmeet
+    database_user: root
+    database_password: root
+    mailer_transport: smtp
+    mailer_host: localhost
+    mailer_user: null
+    mailer_password: null
+    locale: en
+    secret: 04e4bd2583d068a07353e4669d66c5c08942d37a
+    database_path: null
+    file_turns: turnos.json
+    file_activescreens: screens.json
+    file_currentpoint: point.json
+    socket: "tcp://127.0.0.1:5555"

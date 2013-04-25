@@ -1,0 +1,64 @@
+<div id="Agenda">
+      <h2 class="section">Agenda</h2>
+    {% set size_list = puntosAgenda|length %}
+
+
+      <div id="botones">
+        {% set contentA = screens.A %}
+        {% set contentB = screens.B %}
+        {% if contentA == 'agenda' %}
+                <a class="ocultar button" onclick="ocultar(this,'A','agenda')">Ocultar en A</a>
+                {% else %}
+                <a class="mostrar button" onclick="mostrar(this,'A','agenda')">Mostrar en A</a>
+        {% endif %}
+
+        {% if contentB == 'agenda' %}
+                <a class="ocultar button" onclick="ocultar(this,'B','agenda')">Ocultar en B</a>
+                {% else %}
+                <a class="mostrar button" onclick="mostrar(this,'B','agenda')">Mostrar en B</a>
+        {% endif %}
+
+        {% if puntoAgendaActual.orden == 1 %}
+          <a id="button_anterior" class="button hide">Punto Anterior</a>
+        {% else  %}
+          <a id="button_anterior" class="button" >Punto Anterior</a>
+        {% endif %}
+
+        {% if puntoAgendaActual.orden == size_list %}
+          <a id="button_siguiente" class="button hide" >Siguiente Punto</a>
+        {% else %}
+           <a id="button_siguiente" class="button" >Siguiente Punto</a>
+        {% endif %}
+      </div>
+
+
+  <div id="lista">
+          <h3 class="subsection">Lista de Puntos de la Agenda</h3>
+          <div id="puntosAgenda">
+            {% if puntosAgenda %}
+                <ol id="lista_puntos_agenda">
+                      {% for punto in puntosAgenda %}
+                        {% if puntoAgendaActual.id == punto.id %}
+                              {% set a_class = 'arrow-current' %}
+                         {% else %}
+                              {% set a_class = 'arrow' %}
+                        {% endif %}
+                          <li>
+                              <a id="{{ punto.id }}" orden="{{ punto.orden }}" class="{{ a_class }}">{{punto.nombre}}</a>
+                          </li>
+                      {% endfor %}
+                </ol>
+            {% else %}
+              <h3>La Agenda no ha sido programada</h3>
+            {% endif %}
+          </div>
+      </div>
+</div>
+<div style="clear:both;"></div>
+
+<script type="text/javascript">
+$(document).ready(function(){
+  $('#button_siguiente').attr('onclick','pasarPuntoSiguiente()');
+  $('#button_anterior').attr('onclick','pasarPuntoAnterior()');
+});
+</script>

@@ -1,0 +1,3 @@
+{# empty Twig template #}
+ <li><a href="{{path('jad_home',{'rolusuario': jur.rol.getSlug(), 'nombreJad': jur.jad.getSlug()})}}" onclick="actualizarSesionVar({{ jur.jad.getId() }})" onmouseover="showResumeJAD(this, {{jur.jad.getId()}},'{{jur.jad}}', '{{jur.rol.slug}}', '{{ jur.jad.slug }}')">{{ jur.jad }}
+  </a></li>

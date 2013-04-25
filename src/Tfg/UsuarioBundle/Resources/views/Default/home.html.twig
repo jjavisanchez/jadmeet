@@ -1,0 +1,161 @@
+{%extends '::base.html.twig'%}
+
+{% block stylesheets %}
+  {{parent()}}
+  <link rel="stylesheet" href="{{asset('bundles/usuario/css/home.css')}}" type="text/css" media="all" />
+  <link rel="stylesheet" href="{{asset('css/fonts/font-awesome/css/font-awesome.css')}}">
+{% endblock %}
+{% block js %}
+  {{parent()}}
+  <script type="text/javascript" src="{{ asset('bundles/fosjsrouting/js/router.js') }}"></script>
+  <script type="text/javascript" src="{{ path('fos_js_routing_js', {"callback": "fos.Router.setData"}) }}"></script>
+{% endblock %}
+
+{% block menu %}
+<!--
+    <li>
+      <a  class="select" href="{{path('home_usuario')}}">
+        <i class="icon_about"></i>
+                <span class="title">Home</span>
+                <span class="description">
+                    Crea y Gestiona
+                </span>
+      </a>
+    </li>
+-->
+
+<li><a href="{{path('home_usuario')}}"><span class="text">Home</span></a></li>
+
+{% endblock %}
+{% if is_granted('ROLE_USUARIO') %}
+          {% block log_out_bar %}
+
+                    Bienvenido {{app.user}}
+                    <a href="{{ path('usuario_logout') }}">Cerrar sesión</a>
+
+           {% endblock %}
+          {% endif %}
+
+{% block main %}
+
+    {% if is_granted('ROLE_USUARIO') %}
+        {% if app.session.hasFlash('info') %}
+           <p class="info">{{ app.session.getFlash('info') }}</p>
+        {% endif %}
+
+	     <div id="resumen">
+          <aside id="asideResumen">
+            <h1>Bienvenido</h1>
+            <p>Pasa el ratón por encima de las opciones que se muestran a la izquierda para comenzar.</p>
+          </aside>
+        </div>
+
+         <nav id="colorNav">
+			 <ul>
+				 <li class="green">
+            <h4>Crear JAD</h4>
+				 	<a class="icon-large icon-plus" href="#" onclick="showResumeCrear()" onmouseover="showResumeCrear()"></a>
+				 </li>
+				 <li class="red">
+            <h4>Seleccionar un JAD</h4>
+				 	<a class="icon-large icon-hand-up" href="#"></a>
+				  <ul id = 'jads'>
+            {% for jur in jurs %}
+              {% render "UsuarioBundle:Default:itemListJad" with {'jur':jur} %}
+           {% endfor %}
+          </ul>
+				 </li>
+				 <li class="blue">
+          <h4>Comparte tu opinión</h4>
+				 	<a class="icon-large icon-twitter" href="#" onclick="showResumeSiguenos()" onmouseover="showResumeSiguenos()"></a>
+				 </li>
+         <li class="yellow">
+          <h4>Info sobre JAD</h4>
+          <a class="icon-large icon-info-sign" href="#" onclick="showResumeInfo()" onmouseover="showResumeInfo()"></a>
+         </li>
+			 </ul>
+		 </nav>
+{% else %}
+{% endif %}
+{% endblock %}
+
+{% block javascripts %}
+{{ parent() }}
+<script type="text/javascript">
+
+function actualizarSesionVar(jadId)
+  {
+      $.ajax({
+        type: "POST",
+        data: "jadId=" +jadId,
+        url:"{{ path('actualizarSesionVar') }}",
+        async: false,
+        success: function(msg){
+            }
+        });
+  }
+
+  function showResumeSiguenos(){
+    elementResumen = document.getElementById('resumen');
+    elementResumen.innerHTML = "<aside id='asideResumen'><h1>Comparte tu opinión</h1><textarea name='comments' class='inputTwitter' placeholder='Escribe tu comentario aquí, para compartirlo en Twitter...' cols='25' rows='5'></textarea></aside>";
+    $('#resumen').append("<a class='button' href='' type='button'>Enviar Tweet</a>");
+  }
+  function showResumeCrear(){
+    elementResumen = document.getElementById('resumen');
+    elementResumen.innerHTML = "<aside id='asideResumen'><h1>Crear JAD</h1><p>Crea un JAD en el que serás el coordinador del mismo y donde podras invitar a participantes y muchas más cosas.</p></aside>";
+  }
+  function showResumeInfo(){
+    elementResumen = document.getElementById('resumen');
+    elementResumen.innerHTML = "<aside id='asideResumen'><h1>Info sobre JAD</h1><p>Un JAD (Joint Applicattion Development) es un proceso o técnica de definición de requisitos y de diseño de la interfaz de usuario, basada en workshops o reuniones participativas entre clientes, directiva y desarrolladores.</p></aside>";
+  }
+
+  function showResumeJAD(element, jadId, jadNombre, rolSlug, jadSlug){
+    //metemos en la variable de sesión el jad elegido, necesario al cargar la pagina del menu del jad.
+    actualizarSesionVar(jadId);
+    element.setAttribute('id','JADSelected');
+    $.ajax({
+        type: "GET",
+        accepts:"application/json",
+        dataType: "json",
+        data: "jadId=" +jadId,
+        url:"{{ path('getInfoJAD') }}",
+        async: false,
+        success: function(msg){
+          //Mostramos el Resumen en el cuadro aside
+           elementResumen = document.getElementById('resumen');
+           //Recuperamos desde la respuesta contenido en msg los 3 atributos que indican rol reuniones y temas abiertos.
+           rol = JSON.parse(msg[0]).rol;
+           elementResumen.innerHTML = "<aside id='asideResumen'><h1>"+jadNombre+'</h1><p>Rol: '+ rol +'</p>';
+
+           if(rol == 'Coordinador'){
+              reuniones = JSON.parse(msg[1]);
+              temasAbiertos = JSON.parse(msg[2]);
+              $('#asideResumen').append('<h3>Reuniones</h3>');
+              switch(reuniones)
+              {
+                case "No hay reuniones":
+                  $('#asideResumen').append('No tiene reuniones planificadas');
+                  break;
+                default:
+                  $.each(reuniones, function(index,value){ $('#asideResumen').append( (index+1) + " "+ value.nombre + '<br>'); });
+              }
+            }
+
+            if(rol != 'Coordinador'){temasAbiertos = JSON.parse(msg[1])}
+            $('#asideResumen').append('<h3>Temas Abiertos</h3>');
+            switch(temasAbiertos)
+            {
+              case 'No hay temas abiertos':
+                $('#asideResumen').append('No tiene Temas Abiertos asignados');
+                break;
+              default:
+                $.each(temasAbiertos, function(index,value){ $('#asideResumen').append( (index+1) + " "+ value.nombre + '<br>'); });
+            }
+            //Montamos la url utilizando el componente de routingbundle y jsroutingbundle de symfon2 para pasar las variables necesarias a la url. Tener en cuenta que es al pasar a jad_home es necesario meter la variable del jad en la sesión, que se hace con la primera linea de esta función.
+           link = Routing.generate('jad_home',{"rolusuario": rolSlug, "nombreJad": jadSlug });
+           $('#resumen').append("<a class='button' href='" + link + "'type='button'>Acceder al JAD</a>");
+        }
+    });
+  }
+</script>
+{% endblock %}

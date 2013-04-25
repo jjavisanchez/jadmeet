@@ -1,0 +1,51 @@
+<div id="acuerdos">
+
+			<h2 class="section">Acuerdos</h2>
+			<div id="botones">
+				{% set contentA = screens.A %}
+			    {% set contentB = screens.B %}
+
+			    {% if contentA == 'acuerdos' %}
+			        <a class="ocultar button" onclick="ocultar(this,'A','acuerdos')">Ocultar en A</a>
+			    {% else %}
+					 <a class="mostrar button" onclick="mostrar(this,'A','acuerdos')">Mostrar en A</a>
+				{% endif %}
+
+				{% if contentB == 'acuerdos' %}
+	                <a class="ocultar button" onclick="ocultar(this,'B','acuerdos')">Ocultar en B</a>
+	            {% else %}
+	                <a class="mostrar button" onclick="mostrar(this,'B','acuerdos')">Mostrar en B</a>
+        		{% endif %}
+
+        		<a id="form" class="button" onclick="mostrarFormNuevoAcuerdo()">Nuevo Acuerdo</a>
+
+			</div>
+			<form id="nuevo_acuerdo" action="javascript:insertarAcuerdo()" method="POST" {{ form_enctype(form) }}>
+				<fieldset>
+					{{ form_label(form.nombre, 'Nombre') }}
+	                {{ form_errors(form.nombre) }}
+	                {{ form_widget(form.nombre,{ 'attr':{
+	                    'placeholder':'Escribe un nombre para el Acuerdo'}}) }}
+
+	                {{ form_label(form.descripcion, 'Descripción') }}
+	                {{ form_errors(form.descripcion) }}
+	                {{ form_widget(form.descripcion,{ 'attr':{
+	                    'placeholder':'Escribe una descripbión para el Acuerdo'}}) }}
+				</fieldset>
+			    {{ form_rest(form) }}
+			    <input id="submit" type="submit" value="Crear Acuerdo" />
+			</form>
+			<h3 class="subsection">Lista Acuerdos almacenados</h3>
+	        <ol id="lista_de_acuerdos" class="lista_info">
+	        	{% for acuerdo in acuerdos %}
+                      <li>
+                          <a id="encabezado_acuerdo_{{ loop.index }}" class="encabezado arrow">{{ acuerdo.nombre }}</a>
+                          <a onclick="eliminarAcuerdo('{{ acuerdo.id }}')" class='delete'><i class='icon-remove' onmouseover="this.className='icon-remove-sign'" onmouseout="this.className='icon-remove'"></i></a>
+                          <a id="editar_acuerdo_{{ loop.index }}" class='edit' onclick="editarAcuerdos('{{ loop.index }}', '{{ acuerdo.id }}')"><i id="figure_{{ loop.index }}" class="icon-pencil" onmouseover="this.className='icon-edit'" onmouseout="this.className='icon-pencil'"></i></a>
+                          <a id="descripcion_acuerdo_{{ loop.index }}" class="content_list">{{ acuerdo.descripcion }}</a>
+                      </li>
+
+                {% endfor %}
+	        </ol>
+</div>
+<div style="clear:both;"></div>

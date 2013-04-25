@@ -1,0 +1,776 @@
+{% extends '::base.html.twig' %}
+
+{% block stylesheets %}
+{{parent()}}
+  <link rel="stylesheet" href="{{asset('bundles/sesionjad/css/sesion_menu.css')}}" type="text/css" media="all" />
+  <link rel="stylesheet" href="{{asset('css/fonts/font-awesome/css/font-awesome.css')}}">
+  <link rel="stylesheet" href="{{asset('bundles/sesionjad/css/sesion_workshop.css')}}" type="text/css" media="all" />
+{% endblock %}
+{% block js %}
+  {{parent()}}
+  <script type="text/javascript" src="{{asset('js/canvas-shapes.js')}}"></script>
+  <script type="text/javascript" src="{{asset('js/jquery.jsPlumb-1.3.16-all-min.js')}}"></script>
+  <script type="text/javascript" src="{{asset('js/jquery.jsPlumb-1.3.16-all.js')}}"></script>
+  <script type="text/javascript" src="{{asset('js/jquery.ui.touch-punch.min.js')}}"></script>
+
+  <script type="text/javascript" src="{{ asset('bundles/fosjsrouting/js/router.js') }}"></script>
+  <script type="text/javascript" src="{{ path('fos_js_routing_js', {"callback": "fos.Router.setData"}) }}"></script>
+
+{% endblock %}
+
+{% block events %} onload=inicio() {% endblock events %}
+
+{% block header %}
+
+{% endblock %}
+
+          {% if is_granted('ROLE_USUARIO') %}
+          {% block log_out_bar %}
+                    <a href="#" class="boton_log_out_bar_left" onClick="adminWindow('{{ rol.slug }}','{{ jad.slug }}','{{ sesion.slug }}')">Administración</a>
+                    <a href="#" id="fullscreen" class="boton_log_out_bar_left">Pantalla Completa</a>
+                    <a href="{{path('jad_sesion',{'rolusuario':rol.slug,'nombreJad':jad.slug,'nombreSesion':sesion.slug})}}" class="boton_log_out_bar_right" >Cerrar Workshop</a>
+           {% endblock %}
+          {% endif %}
+
+{% block main %}
+      <div id="info_permanente" class="info_permanente">
+          <div id="pantalla_A">
+            {% set content = screens.A %}
+            {% if content == 'agenda' %}
+                  <h2>Agenda del día</h2>
+                    <div id="puntosAgenda" class="screens">
+                      {% if puntosAgenda %}
+                            <ol id="lista_puntos_agenda">
+                                  {% for punto in puntosAgenda %}
+                                   {% if puntoAgendaActual.id == punto.id %}
+                                        {% set a_class = 'arrow-current' %}
+                                   {% else %}
+                                        {% set a_class = 'arrow' %}
+                                   {% endif %}
+                                      <li>
+                                          <a id="{{ punto.id }}" orden="{{ punto.orden }}" class="{{ a_class }}">{{punto.nombre}}</a>
+                                      </li>
+                                  {% endfor %}
+                            </ol>
+                      {% else %}
+                        <h3>La Agenda no ha sido programada</h3>
+                      {% endif %}
+                    </div>
+                {% elseif content == 'turnos' %}
+                  <h2>Turnos</h2>
+                      <div id="Turnos" class="screens">
+                        <ul id="result">
+                            {% for turno in turnos %}
+                                {% if loop.index == 1 %}
+                                      {% set li_class = 'icon-large icon-user icon-user-current' %}
+                                {% else %}
+                                      {% set li_class = 'icon-large icon-user' %}
+                                {% endif %}
+                                <li class="{{ li_class }}">
+                                    <a>{{turno}}</a>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                      </div>
+                {% elseif content == 'objetivos' %}
+                {% elseif content == 'acuerdos' %}
+                    <h2>Acuerdos</h2>
+                    <div id="acuerdos" class="screens">
+                        <ul>
+                          {% for acuerdo in acuerdos %}
+                              <li id="{{ acuerdo.id }}" class="note"><a id="acuerdo_{{ loop.index }}"><h3>{{ loop.index }}. {{ acuerdo.nombre }}</h3><p>{{ acuerdo.descripcion }}</p></a></li>
+                          {% endfor %}
+                        </ul>
+                    </div>
+                {% elseif content == 'temasAbiertos' %}
+                {% elseif content == 'restricciones' %}
+                {% else %}
+                {# Put here default case #}
+                {% endif %}
+          </div><!-- Fin div Pantalla A-->
+
+          <div id="pantalla_B">
+              {% set content = screens.B %}
+              {% if content == 'agenda' %}
+                  <h2>Agenda del día</h2>
+                    <div id="puntosAgenda" class="screens">
+                      {% if puntosAgenda %}
+                            <ol id="lista_puntos_agenda">
+                                  {% for punto in puntosAgenda %}
+                                   {% if puntoAgendaActual.id == punto.id %}
+                                        {% set a_class = 'arrow-current' %}
+                                   {% else %}
+                                        {% set a_class = 'arrow' %}
+                                   {% endif %}
+                                      <li>
+                                          <a id="{{ punto.id }}" orden="{{ punto.orden }}" class="{{ a_class }}">{{punto.nombre}}</a>
+                                      </li>
+                                  {% endfor %}
+                            </ol>
+                      {% else %}
+                        <h3>La Agenda no ha sido programada</h3>
+                      {% endif %}
+                    </div>
+                {% elseif content == 'turnos' %}
+                  <h2>Turnos</h2>
+                      <div id="Turnos" class="screens">
+                        <ul id="result">
+                            {% for turno in turnos %}
+                                {% if loop.index == 1 %}
+                                      {% set li_class = 'icon-large icon-user icon-user-current' %}
+                                {% else %}
+                                      {% set li_class = 'icon-large icon-user' %}
+                                {% endif %}
+                                <li class="{{ li_class }}">
+                                    <a>{{turno}}</a>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                      </div>
+                {% elseif content == 'objetivos' %}
+                {% elseif content == 'acuerdos' %}
+                  <h2>Acuerdos</h2>
+                    <div id="acuerdos" class="screens">
+                        <ul>
+                          {% for acuerdo in acuerdos %}
+                              <li id="{{ acuerdo.id }}" class="note"><a id="acuerdo_{{ loop.index }}"><h3>{{ loop.index }}. {{ acuerdo.nombre }}</h3><p>{{ acuerdo.descripcion }}</p></a></li>
+                          {% endfor %}
+                        </ul>
+                    </div>
+                {% elseif content == 'temasAbiertos' %}
+                {% elseif content == 'restricciones' %}
+                {% else %}
+                {# Put here default case #}
+                {% endif %}
+          </div>
+      </div>
+<div id="general_info">
+            <div id="clock">
+                <div class="clock h">
+                           <div class="hold"><div class="ring" id="hour"></div></div>
+                           <div class="hold half2"><div class="ring" id="hours"></div></div>
+                           <div class="display" id="dH" data-hours=0>00</div>
+                      </div>
+                      <div class="clock m">
+                           <div class="hold"><div class="ring" id="min"></div></div>
+                           <div class="hold half2"><div class="ring" id="mins"></div></div>
+                           <div class="display" id="dM" data-minutes=0>00</div>
+                      </div>
+                      <div class="clock s">
+                           <div class="hold"><div class="ring" id="sec"></div></div>
+                           <div class="hold half2"><div class="ring" id="secs"></div></div>
+                           <div class="display" id="dS" data-seconds=0>00</div>
+                      </div>
+            </div>
+
+            <div id="container_jad_title">
+                  <div id="jad_title">JAD: {{jad.nombre}} <br>Workshop: {{sesion.nombre}}</div>
+            </div>
+
+            <div id="container_jad_objectives">
+                  <div id="jad_title">Próposito del JAD: Resumido en 100 carácteres</div>
+            </div>
+
+</div>
+
+            <div class="diagram_container" >
+              <div class="header_diagrama">Título del Modelo</div>
+              <div class="diagrama">
+                <div class="borde_izq"></div>
+                <div id="espacio_diagrama" class="diagrama_canvas"></div>
+              </div>
+
+              <div class="header_diagrama">Figuras Candidatas / Propuestas</div>
+              <div class="figuras_candidatas">
+                <div class="borde_izq">
+                </div>
+                <div class="diagrama_canvas">
+                  <canvas id="figure_page" class="draggable" draggable="true" width="129" height="86"></canvas>
+                  <canvas id="figure_page_stack" class="draggable" draggable="true" width="129" height="86"></canvas>
+                </div>
+              </div>
+
+            </div>
+
+{% endblock %}
+
+    {% block footer %}
+        <div id="footer-container">
+
+      </div>
+    {% endblock %}
+
+{% block javascripts %}
+{{ parent() }}
+<script type="text/javascript">
+
+/*$(document).ready(function(){
+    if( ($('#pantalla_A').length == 0) && ($('#pantalla_B').length > 0) ){
+        $('#pantalla_B').css('height','100%');
+    }
+    if( ($('#pantalla_B').length == 0) && ($('#pantalla_A').length > 0) ){
+         $('#pantalla_A').css('height','100%');
+    }
+)};*/
+
+  var isFull = false;
+
+fullscreen = function(e){
+      if (e.webkitRequestFullScreen) {
+        e.webkitRequestFullScreen();
+      } else if(e.mozRequestFullScreen) {
+        e.mozRequestFullScreen();
+      }
+  }
+
+  function cancelFullscreen() {
+  if(document.cancelFullScreen) {
+    document.cancelFullScreen();
+  } else if(document.mozCancelFullScreen) {
+    document.mozCancelFullScreen();
+  } else if(document.webkitCancelFullScreen) {
+    document.webkitCancelFullScreen();
+  }
+}
+
+document.getElementById('fullscreen').onclick = function(){
+  if (!isFull){
+    fullscreen(document.documentElement);
+    document.getElementById('fullscreen').innerHTML = "Cerrar Pantalla Completa";
+    isFull = true;
+  }else{
+    cancelFullscreen();
+     document.getElementById('fullscreen').innerHTML = "Pantalla Completa";
+     isFull = false;
+  }
+
+
+}
+
+//Scripts para el diagrama
+  var ctx = document.getElementById("figure_page").getContext("2d");
+  page(ctx);
+  var ctx = document.getElementById("figure_page_stack").getContext("2d");
+  pageStack(ctx);
+  var id_cont=0;
+  var firstInstance = jsPlumb.getInstance();
+
+  var targetEndpoint;
+  var sourceEndpoint;
+  var sourceTargetEndpointRight;
+  var sourceTargetEndpointLeft;
+  var cerrojo = false;
+
+//Codigo para inicializar jsPlumb
+jsPlumb.bind("ready", function () {
+//Configurar elementos jsPlumb
+ jsPlumb.Defaults.Container = $("#espacio_diagrama");
+ //jsPlumb.setRenderMode(jsPlumb.CANVAS);
+ var targetDropOptions = {
+
+        };
+
+        connectorHoverStyle = {
+            lineWidth: 4,
+            strokeStyle: "#353535",
+            cursor: 'pointer'
+        }
+
+        //Setting up a Target endPoint
+        var targetColor = "#353535";
+        targetEndpoint = {
+            anchor: ["TopCenter",{ shape:"circle", anchorCount:150 }],
+            endpoint: ["Dot"],
+            paintStyle: { fillStyle: targetColor },
+            //scope: "green dot",
+            connectorStyle: { strokeStyle: targetColor, lineWidth: 4 },
+            connector: ["Flowchart", { curviness: 63}],
+            maxConnections: 5,
+            isTarget: true,
+            dropOptions: targetDropOptions,
+            connectorHoverStyle: connectorHoverStyle
+        };
+
+        //Setting up a Source endPoint
+        var sourceColor = "#4BB5E0";
+        sourceEndpoint = {
+            anchor: ["BottomCenter",{ shape:"square", anchorCount:150 }],
+            endpoint: ["Rectangle", { radius: 8}],
+            paintStyle: { fillStyle: sourceColor },
+            isSource: true,
+            //scope: "green dot",
+            connectorStyle: { strokeStyle: sourceColor, lineWidth: 2 },
+            connector: ["Flowchart", { curviness: 63}],
+            maxConnections: 4,
+            dropOptions: targetDropOptions,
+            connectorHoverStyle: connectorHoverStyle
+        };
+
+        //Setting up a Source and Target endPoint
+        var sourceColor = "#8EC926";
+        sourceTargetEndpointRight = {
+            anchor: ["RightMiddle", { shape:"square", anchorCount:150 }],
+            endpoint: ["Rectangle", { radius: 8}],
+            paintStyle: { fillStyle: sourceColor },
+            isSource: true,
+            isTarget: true,
+            //scope: "green dot",
+            connectorStyle: { strokeStyle: sourceColor, lineWidth: 2 },
+            connector: ["Flowchart", { curviness: 63}],
+            maxConnections: 4,
+            dropOptions: targetDropOptions,
+            connectorHoverStyle: connectorHoverStyle
+        };
+
+        var sourceColor = "#8EC926";
+        sourceTargetEndpointLeft = {
+            anchor: ["LeftMiddle", { shape:"square", anchorCount:150 }],
+            endpoint: ["Rectangle", { radius: 8}],
+            paintStyle: { fillStyle: sourceColor },
+            isSource: true,
+            isTarget: true,
+            //scope: "green dot",
+            connectorStyle: { strokeStyle: sourceColor, lineWidth: 2 },
+            connector: ["Flowchart", { curviness: 63}],
+            maxConnections: 4,
+            dropOptions: targetDropOptions,
+            connectorHoverStyle: connectorHoverStyle
+        };
+});
+
+
+  function inicio(){
+    document.getElementById('figure_page').ondragstart = cogerElemento;
+    document.getElementById('figure_page_stack').ondragstart = cogerElemento;
+    document.getElementById('espacio_diagrama').ondragover = sobreEspacio;
+    document.getElementById('espacio_diagrama').ondrop = soltarElemento;
+
+    if( !($('#pantalla_A').children().length > 0 ) && ($('#pantalla_B').length > 0) ){
+        $('#pantalla_A').remove();
+        $('#pantalla_B').css('height','100%');
+    }
+    if( !($('#pantalla_B').children().length > 0) && ($('#pantalla_A').length > 0) ){
+        $('#pantalla_B').remove();
+         $('#pantalla_A').css('height','100%');
+    }
+  }
+
+  // Función que gestiona el momento en que
+  // un elemento comienza a ser arrastrado.
+  function cogerElemento(e){
+    cerrojo = true;
+    // Guardamos información relevante para su
+    // posterior recuperación.
+    // Guardamos su contenido.
+    // Tiene que ser de un tipo conocido, como text
+    e.dataTransfer.setData('text',this.id);
+  //  e.dataTransfer.setData("accion","copiar");
+
+    //Permitimos dejarlo en sitio de 'mover'
+    e.dataTransfer.effectAllowed = 'copy';
+  }
+
+
+//Al llegar a la zona de destino el evento ejecuta esta función
+  function sobreEspacio(e) {
+    // Configura acción a realizar, que coincida con la
+    // configurada en el evento effectAllowed para que
+    // se produzca la acción
+    e.dataTransfer.dropEffect = 'copy';
+    // Valores: none,copy,copyLink,copyMove,link
+    // linkMove, move, all, uninitialized
+
+    // Dejamos soltar, si está a true no termina acción,
+    // a false permite continuar con la acción.
+    return false;
+    //return !(e.dataTransfer.getData("accion")=="copiar");
+  }
+
+
+  //Eliminamos la figura junto con sus puntos de conexión jsPlumb
+   function removeShape(el){
+    jsPlumb.removeAllEndpoints(el.id);
+    document.getElementById(el.id).parentNode.removeChild(el);
+  }
+
+  // Soltamos elemento sobre la zona configurada para
+  // recibir elementos.
+  function soltarElemento(e){
+
+    if(cerrojo){
+      // Creamos el nuevo Elemento
+      var id_elemento=e.dataTransfer.getData('text');
+      var nuevo = document.createElement('canvas');
+      var ctx = nuevo.getContext("2d");
+      nuevo.setAttribute("id",id_elemento+"_"+id_cont++);
+      nuevo.setAttribute("height","87");
+      nuevo.setAttribute("width","129")
+      nuevo.setAttribute("ondblclick","removeShape(this)");
+      nuevo.setAttribute("class","snodo");
+
+      switch (id_elemento)
+      {
+        case "figure_page":
+          page(ctx);
+          break;
+        case "figure_page_stack":
+          pageStack(ctx);
+          break;
+      }
+      document.getElementById('espacio_diagrama').appendChild(nuevo);
+
+      //jsPlumb
+              var shape = jsPlumb.getSelector('.snodo');
+              jsPlumb.addEndpoint(shape, targetEndpoint);
+              jsPlumb.addEndpoint(shape, sourceEndpoint);
+              jsPlumb.addEndpoint(shape, sourceTargetEndpointRight);
+              jsPlumb.addEndpoint(shape, sourceTargetEndpointLeft);
+              jsPlumb.draggable($('.snodo'),{containment:'parent'});
+
+      cerrojo = false;
+
+    }
+  }
+
+  function adminWindow(rolSlug, jadSlug, workshopSlug){
+    link = Routing.generate('admin_window',{"rolusuario": rolSlug, "nombreJad": jadSlug, "nombreSesion": workshopSlug });
+    window.open(link,'Pantalla de Administración','width=400,height=200,toolbar=yes,location=yes,directories=yes,status=yes,menubar=yes,scrollbars=yes,copyhistory=yes, resizable=yes');
+  }
+
+</script>
+<script src="http://localhost:8080/sockjs-0.3.js"></script>
+<script type="text/javascript">
+var sock = new SockJS('http://localhost:8080/broadcast');
+sock.onmessage = function (event) {
+    //Como recibimo un flujo de datos (string) que es un array codificado en su origen a json lo parseamos a json
+    mensaje = JSON.parse(event.data);
+
+    switch(mensaje.evento)
+    {
+        case 'request.turn':
+            //Este if sirve para comprobar que los turnos estan visibles al recibir este evento, ya que
+            //podrian pedir un turno y no estar visible el div que los muestra en la pantalla compartida.
+            if($('#Turnos').length > 0){
+                //Dentro del array que hemos parseado en la linea anterior ocurre lo mismo con el objeto fuente, notar que en su origen hubo que pasarlo a json con jmsserializer en la clase HandlerJSON
+                objeto = JSON.parse(mensaje.objeto);
+                if(mensaje.posicion == 1){
+                  li_class = 'icon-large icon-user icon-user-current';
+                }else{
+                  li_class = 'icon-large icon-user';
+                }
+                $("[id=result]").append("<li class='" + li_class + "'><a>" + objeto.nombre + " " + objeto.apellidos + "</a></li>");
+            }
+            break;
+        case 'remove.turn':
+            //Este if sirve para comprobar que los turnos estan visibles al recibir este evento, ya que
+            //podrian eliminar un turno y no estar visible el div que los muestra en la pantalla compartida.
+            if($('#Turnos').length > 0){
+                turnos = JSON.parse(mensaje.turnos);
+                $("[id=result]").html("");
+                $.each(turnos, function(index, user){
+                    if(index == 0)
+                    {
+                      li_class = 'icon-large icon-user icon-user-current';
+                    }else{
+                      li_class = 'icon-large icon-user';
+                    }
+                    $("[id=result]").append("<li class='" + li_class + "'><a>" + user.nombre + " " + user.apellidos + "</a></li>");
+                });
+            }
+            break;
+        case 'hide.screen':
+            pantallas = JSON.parse(mensaje.pantallas);
+            if(pantallas.A == '0')
+            {
+              $('#pantalla_A').remove();
+              if($('#pantalla_B').length > 0){
+                 $('#pantalla_B').css('height','100%');
+              }
+            }
+            if(pantallas.B == '0'){
+              $('#pantalla_B').remove();
+              if($('#pantalla_A').length > 0){
+                 $('#pantalla_A').css('height','100%');
+              }
+            }
+            break;
+        case 'show.screen':
+            //Recuperar del mensaje la pantalla y el contenido para mostrarlo en dicha pantalla.
+            switch(mensaje.info)
+            {
+              case 'turnos':
+                turnos = JSON.parse(mensaje.contenido);
+                if(mensaje.pantalla == 'A')
+                {
+                  if($('#pantalla_A').length > 0){
+                    $('#pantalla_A').remove();
+                  }
+
+                  if( ($('#pantalla_A').length == 0) && ($('#pantalla_B').length == 0) ){
+                    var height = '100%';
+                  }else{
+                    var height = '50%';
+                  }
+
+                  if( ($('#pantalla_B').length > 0) ){
+                    $('#pantalla_B').css('height','50%');
+                  }
+
+
+                  $('#info_permanente').prepend("<div id='pantalla_A'><h2>Turnos</h2><div id='Turnos' class='screens'><ul id='result'></ul></div></div>");
+                  $('#pantalla_A').css('height',height);
+                  $.each(turnos, function(index, user){
+                      if(index == 0)
+                      {
+                        li_class = 'icon-large icon-user icon-user-current';
+                      }else{
+                        li_class = 'icon-large icon-user';
+                      }
+                      $('#result').append("<li class='" + li_class + "'><a>" + user.nombre + " " + user.apellidos + "</a></li>");
+                  });
+                }
+                if(mensaje.pantalla == 'B')
+                {
+                  if($('#pantalla_B').length > 0){
+                    $('#pantalla_B').remove();
+                  }
+                  if( ($('#pantalla_A').length == 0) && ($('#pantalla_B').length == 0) ){
+                    var height = '100%';
+                  }else { var height = '50%'; }
+                  if( ($('#pantalla_A').length > 0) ){
+                    $('#pantalla_A').css('height','50%');
+                  }
+                  $('#info_permanente').append("<div id='pantalla_B'><h2>Turnos</h2><div id='Turnos' class='screens'><ul id='result'></ul></div></div>");
+                  $('#pantalla_B').css('height',height);
+                  $.each(turnos, function(index, user){
+                      if(index == 0)
+                      {
+                        li_class = 'icon-large icon-user icon-user-current';
+                      }else{
+                        li_class = 'icon-large icon-user';
+                      }
+                      $('#pantalla_B #Turnos #result').append("<li class='" + li_class + "'><a>" + user.nombre + " " + user.apellidos + "</a></li>");
+                  });
+                }
+                break;
+              case 'agenda':
+                var agenda = JSON.parse(mensaje.contenido);
+                var punto_actual = agenda.punto;
+                var puntosAgenda = JSON.parse(agenda.puntosAgenda);
+
+                if(mensaje.pantalla == 'A')
+                {
+                    if($('#pantalla_A').length > 0){
+                    $('#pantalla_A').remove();
+                    }
+                    if( ($('#pantalla_A').length == 0) && ($('#pantalla_B').length == 0) ){
+                      var height = '100%';
+                    }else{
+                      var height = '50%';
+                    }
+
+                    if( ($('#pantalla_B').length > 0) ){
+                      $('#pantalla_B').css('height','50%');
+                    }
+
+                    $('#info_permanente').prepend("<div id='pantalla_A'><h2>Agenda del día</h2><div id='puntosAgenda' class='screens'><ol id='lista_puntos_agenda'></ol></div></div>");
+                    $('#pantalla_A').css('height',height);
+                    $.each(puntosAgenda, function(index, punto){
+
+                        if( (index+1) == punto_actual )
+                        {
+                          a_class = 'arrow-current';
+                        }else{
+                          a_class = 'arrow';
+                        }
+                        $('#pantalla_A #puntosAgenda ol').append("<li><a id='"+punto.id+"' orden='"+punto.orden+"' class='"+a_class+"'>" + punto.nombre + "</a></li>");
+                    });
+                  }
+                if(mensaje.pantalla == 'B')
+                {
+                  if($('#pantalla_B').length > 0){
+                    $('#pantalla_B').remove();
+                  }
+                  if( ($('#pantalla_A').length == 0) && ($('#pantalla_B').length == 0) ){
+                    var height = '100%';
+                  }else { var height = '50%'; }
+                  if( ($('#pantalla_A').length > 0) ){
+                    $('#pantalla_A').css('height','50%');
+                  }
+                  $('#info_permanente').append("<div id='pantalla_B'><h2>Agenda del día</h2><div id='puntosAgenda' class='screens'><ol id='lista_puntos_agenda'></ol></div></div>");
+                  $('#pantalla_B').css('height',height);
+                  $.each(puntosAgenda, function(index, punto){
+                        if( (index+1) == punto_actual )
+                        {
+                          a_class = 'arrow-current';
+                        }else{
+                          a_class = 'arrow';
+                        }
+                        $('#pantalla_B #puntosAgenda ol').append("<li><a id='"+punto.id+"' orden='"+punto.orden+"' class='"+a_class+"'>" + punto.nombre + "</a></li>");
+                    });
+                }
+                break;
+              case 'objetivos':
+                if(mensaje.pantalla == 'A')
+                  {
+                    $('#info_permanente').prepend("<div id='pantalla_A'>"+ mensaje.info + mensaje.contenido+ "</div>");
+                  }
+                  if(mensaje.pantalla == 'B'){
+                    $('#info_permanente').append("<div id='pantalla_B'>" + mensaje.info + mensaje.contenido + "</div>");
+                  }
+                  break;
+              case 'acuerdos':
+                var acuerdos = JSON.parse(mensaje.contenido);
+                if(mensaje.pantalla == 'A')
+                {
+                    if($('#pantalla_A').length > 0){
+                    $('#pantalla_A').remove();
+                    }
+                    if( ($('#pantalla_A').length == 0) && ($('#pantalla_B').length == 0) ){
+                      var height = '100%';
+                    }else{
+                      var height = '50%';
+                    }
+
+                    if( ($('#pantalla_B').length > 0) ){
+                      $('#pantalla_B').css('height','50%');
+                    }
+
+                    $('#info_permanente').prepend("<div id='pantalla_A'><h2>Acuerdos</h2><div id='acuerdos' class='screens'><ul></ul></div></div>");
+                    $('#pantalla_A').css('height',height);
+                    $.each(acuerdos, function(index, acuerdo){
+                        $('#pantalla_A #acuerdos ul').append("<li id="+acuerdo.id+" class='note'><a id='acuerdo_"+ (index+1) +"'> <h3>"+ (index+1) + ". " + acuerdo.nombre + "</h3><p>"+acuerdo.descripcion+"</p></a></li>");
+                    });
+                  }
+
+
+
+                  if(mensaje.pantalla == 'B')
+                  {
+                    if($('#pantalla_B').length > 0){
+                      $('#pantalla_B').remove();
+                    }
+                    if( ($('#pantalla_A').length == 0) && ($('#pantalla_B').length == 0) ){
+                      var height = '100%';
+                    }else { var height = '50%'; }
+                    if( ($('#pantalla_A').length > 0) ){
+                      $('#pantalla_A').css('height','50%');
+                    }
+
+                    $('#info_permanente').append("<div id='pantalla_B'><h2>Acuerdos</h2><div id='acuerdos' class='screens'><ul></ul></div></div>");
+                    $('#pantalla_B').css('height',height);
+                    $.each(acuerdos, function(index, acuerdo){
+                        $('#pantalla_B #acuerdos ul').append("<li class='note'><a id='acuerdo_"+ (index+1) +"'> <h3>"+ (index+1) + ". " + acuerdo.nombre + "</h3><p>"+acuerdo.descripcion+"</p></a></li>");
+                    });
+                  }
+                break;
+              case'temasAbiertos':
+              if(mensaje.pantalla == 'A')
+                {
+                  $('#info_permanente').prepend("<div id='pantalla_A'>"+ mensaje.info + mensaje.contenido+ "</div>");
+                }
+                if(mensaje.pantalla == 'B'){
+                  $('#info_permanente').append("<div id='pantalla_B'>" + mensaje.info + mensaje.contenido + "</div>");
+                }
+                break;
+              case 'restricciones':
+              if(mensaje.pantalla == 'A')
+                {
+                  $('#info_permanente').prepend("<div id='pantalla_A'>"+ mensaje.info + mensaje.contenido+ "</div>");
+                }
+                if(mensaje.pantalla == 'B'){
+                  $('#info_permanente').append("<div id='pantalla_B'>" + mensaje.info + mensaje.contenido + "</div>");
+                }
+                break;
+              default:
+                console.log('mensaje.info no es correcto')
+            }
+            break; //break del case show.screen
+        case 'next.agenda':
+            var punto = mensaje.punto;
+            var orden_actual = mensaje.orden_actual;
+
+            $("[id=lista_puntos_agenda] li").each(function(){
+              if( $('a',this).attr('orden') == orden_actual ){
+                  $('a',this).attr('class','arrow-current');
+                }else{
+                  $('a',this).attr('class','arrow');
+                }
+            });
+            break;
+        case 'back.agenda':
+              var punto = mensaje.punto;
+              var orden_actual = mensaje.orden_actual;
+
+               $("[id=lista_puntos_agenda] li").each(function(){
+                if( $('a',this).attr('orden') == orden_actual ){
+                  $('a',this).attr('class','arrow-current');
+                }else{
+                  $('a',this).attr('class','arrow');
+                }
+              });
+              break;
+        case 'new.agreement':
+            var id_list= ($('#acuerdos ul').size()) +2;
+            $('#acuerdos ul').append("<li id="+mensaje.id+" class='note'><a id='acuerdo_"+id_list+"'><h3>"+id_list+". "+mensaje.nombre+"</h3><p>"+mensaje.descripcion+"</p></a></li>");
+          break;
+        case 'edit.agreement':
+          var id_list = ($("#acuerdos ul li").index($("#"+mensaje.id+""))) + 1;
+          $("[id="+mensaje.id+"]").html("<a id='acuerdo_"+id_list+"'><h3>"+id_list+". "+mensaje.nombre+"</h3><p>"+mensaje.descripcion+"</p></a>");
+          break;
+        case 'remove.agreement':
+          $("[id="+mensaje.id+"]").remove();
+          break;
+        default:
+        console.log('mensaje.evento no es correcto');
+    }
+};
+</script>
+<script type="text/javascript">
+function pad(num) {
+    return ( num < 10 ? "0" : "" ) + num;
+}
+
+function increment() {
+    var time = new Date();
+    var secs = time.getSeconds();
+    var mins = time.getMinutes();
+    var hours = time.getHours();
+
+    $('#dS').data('seconds',secs);
+    $('#dM').data('minutes',mins);
+    $('#dH').data('hours',hours);
+    $('#dS').text(pad(secs));
+    $('#dM').text(pad(mins));
+    $('#dH').text(pad(hours));
+
+    var deg = secs * 6;
+    if (deg < 180) {
+        $("#sec").css('transform','rotate('+deg+'deg)');
+        $("#secs").css('transform','rotate(0deg)');
+    } else {
+        $("#sec").css('transform','rotate(180deg)');
+        $("#secs").css('transform','rotate('+(deg-180)+'deg)');
+    }
+    var degM = mins * 6;
+    if (degM < 180) {
+        $("#min").css('transform','rotate('+degM+'deg)');
+        $("#mins").css('transform','rotate(0deg)');
+    } else {
+        $("#min").css('transform','rotate(180deg)');
+        $("#mins").css('transform','rotate('+(degM-180)+'deg)');
+    }
+    var degH = hours * 15;
+    if (degH < 180) {
+        $("#hour").css('transform','rotate('+degH+'deg)');
+        $("#hours").css('transform','rotate(0deg)');
+    } else {
+        $("#hour").css('transform','rotate(180deg)');
+        $("#hours").css('transform','rotate('+(degH-180)+'deg)');
+    }
+}
+
+setInterval(function(){increment()}, 1000);
+</script>
+{% endblock %}
+

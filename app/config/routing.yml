@@ -1,0 +1,43 @@
+#importa las rutas especificadas en los controladores del bundle sesion_jad en forma de anotaciones
+sesion_jad:
+    resource: "@SesionJadBundle/Controller/"
+    type:     annotation
+    prefix:   /
+#importa las rutas especificadas en los controladores del bundle jad en forma de anotaciones
+jad:
+    resource: "@JadBundle/Controller/"
+    type:     annotation
+    prefix:   /
+
+#importa las rutas especificadas en los controladores del bundle usuario en forma de anotaciones
+usuario:
+    resource: "@UsuarioBundle/Controller/"
+    type:     annotation
+    prefix:   /
+
+inicio:
+       pattern:  /
+       defaults: { _controller: UsuarioBundle:Default:login }
+
+#importa las rutas del Bundle Usuario especificadas en el routing.yml indicado
+usuarioBundle:
+       resource: "@UsuarioBundle/Resources/config/routing.yml"
+       prefix:   /usuario
+
+#importa las rutas del Bundle JadBundle especificadas en el routing.yml indicado
+jadBundle:
+       resource: "@JadBundle/Resources/config/routing.yml"
+       prefix:   /
+
+#importa las rutas del Bundle SesionJadBundle especificadas en el routing.yml indicado
+sesionJadBundle:
+       resource: "@SesionJadBundle/Resources/config/routing.yml"
+       prefix:   /
+
+fos_js_routing:
+    resource: "@FOSJsRoutingBundle/Resources/config/routing/routing.xml"
+
+# Internal routing configuration to handle ESI
+#_internal:
+#    resource: "@FrameworkBundle/Resources/config/routing/internal.xml"
+#    prefix:   /_internal

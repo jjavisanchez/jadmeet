@@ -1,0 +1,26 @@
+jms_security_extra:
+    secure_all_services: false
+    expressions: true
+
+security:
+       firewalls:
+           frontend:
+               pattern:     ^/
+               anonymous:   ~
+               form_login:
+                   login_path: inicio
+                   check_path: usuario_login_check
+                   default_target_path: home_usuario
+               logout:
+                   path: usuario_logout
+                   target: inicio
+       access_control:
+           - { path: ^/usuario, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+           - { path: ^/usuario/registro, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+           - { path: ^/usuario/*, roles: ROLE_USUARIO }
+       providers:
+           usuarios:
+               entity: { class: Tfg\UsuarioBundle\Entity\Usuario, property: email }
+       encoders:
+            Tfg\UsuarioBundle\Entity\Usuario: plaintext
+

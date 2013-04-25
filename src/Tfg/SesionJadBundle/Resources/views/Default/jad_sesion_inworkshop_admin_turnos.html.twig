@@ -1,0 +1,36 @@
+<div id="Turnos">
+      <h2 class="section">Turnos</h2>
+      <div id="botones">
+                {% set contentA = screens.A %}
+                {% set contentB = screens.B %}
+
+                {% if contentA == 'turnos' %}
+                    <a class="ocultar button" onclick="ocultar(this,'A','turnos')">Ocultar en A</a>
+                {% else %}
+                  <a class="mostrar button" onclick="mostrar(this,'A','turnos')">Mostrar en A</a>
+                {% endif %}
+
+                {% if contentB == 'turnos' %}
+                <a class="ocultar button" onclick="ocultar(this,'B','turnos')">Ocultar en B</a>
+                {% else %}
+                  <a class="mostrar button" onclick="mostrar(this,'B','turnos')">Mostrar en B</a>
+                {% endif %}
+      </div>
+      <div id="lista">
+        <h3 class="subsection">Lista Turnos</h3>
+	        <ul id="result">
+
+	        	      {% for turno in turnos %}
+                      {% if loop.index == 1 %}
+                            {% set li_class = 'icon-large icon-user icon-user-current' %}
+                      {% else %}
+                            {% set li_class = 'icon-large icon-user' %}
+                      {% endif %}
+                      <li class="{{ li_class }}">
+                          <a>{{turno}}</a><a onclick='pasarTurno({{turno.id}})' class='delete'><i class='icon-remove-sign'></i></a>
+                      </li>
+                  {% endfor %}
+	        </ul>
+        </div>
+</div>
+<div style="clear:both;"></div>

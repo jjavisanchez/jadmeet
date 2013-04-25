@@ -1,0 +1,103 @@
+{%extends '::base.html.twig'%}
+
+{%block stylesheets%}
+{{parent()}}
+<link rel="stylesheet" href="{{asset('bundles/jad/css/jad_menu.css')}}" type="text/css" media="all" />
+<link rel="stylesheet" href="{{asset('css/fonts/font-awesome/css/font-awesome.css')}}">
+
+{% endblock %}
+{% block menu %}
+<!--
+      <li>
+      <a  class="select" href="{{path('jad_home',{'rolusuario':rol.slug,'nombreJad':jad.slug})}}">
+        <i class="icon_about"></i>
+                <span class="title">JAD Menu</span>
+                <span class="description">
+                    Gestiónalo
+                </span>
+      </a>
+    </li>
+-->
+<li><a href="{{path('home_usuario')}}"><span class="text">Home</span></a></li>
+<li><a href="{{path('jad_home',{'rolusuario':rol.slug,'nombreJad':jad.slug})}}"><span class="text">JAD Menú</span></a></li>
+{% endblock %}
+
+          {% if is_granted('ROLE_USUARIO') %}
+          {% block log_out_bar %}
+                    {{app.user}}, {{rol.nombre}}
+                    <a href="{{ path('usuario_logout') }}">Cerrar sesión</a>
+           {% endblock %}
+          {% endif %}
+
+{% block main %}
+
+            <section class="container"><h3><span class="left ribbon"></span>JAD : {{jad}}<span class="right ribbon"></span></h3></section>
+
+            <div id="resumen">
+              <aside id="asideResumen">
+                <h1>Definición del Proyecto</h1>
+                <h3>Propósito</h3>
+                    {{jad.propositos}}
+                <h3>Alcance</h3>
+                    {{jad.alcance}}
+                <h3>Objetivos</h3>
+                    {{jad.objetivosDireccion}}
+              </aside>
+            </div>
+
+
+            <nav id="colorNav">
+                <ul>
+                    <li class="orange">
+                        <h4>Participantes</h4>
+			             <a class="icon-large icon-user" href="#"></a>
+                    </li>
+
+                    <li class="blueocean">
+                        <h4>Calendario</h4>
+			             <a class="icon-large icon-calendar" href="#"></a>
+                    </li>
+
+                    <li class="yellow">
+                        <section>
+                            <h4>Claves del JAD</h4>
+                        </section>
+			                 <a class="icon-large icon-key" href="#"></a>
+                    </li>
+
+                    <li class="purple">
+                        <section>
+                            <h4>Workshops</h4>
+                        </section>
+			            <a class="icon-large icon-group" href="{{path('jad_sesiones',{'rolusuario': rol.slug, 'nombreJad': jad.getSlug()})}}"></a>
+                    </li>
+
+                 {% if rol.nombre == 'Coordinador' %}
+                    <li class="blue">
+                        <section>
+                            <h4>Editar Definición del Proyecto</h4>  
+                        </section>
+                        <a class="icon-large icon-edit" href="#"></a>
+                    </li>
+
+                    <li class="red">
+                        <section>
+                            <h4>Eliminar JAD</h4>
+                        </section>
+                        <a class="icon-large icon-remove" href="#"></a>
+                    </li>
+                    {% endif %}
+
+                </ul>
+            </nav>
+
+
+
+
+
+        <!--<aside>
+                <h3>aside</h3>
+                <p></p>
+        </aside>-->
+
+{% endblock %}

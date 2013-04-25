@@ -1,0 +1,50 @@
+<form id="edit_temaAbierto" action="" method="POST" {{ form_enctype(form) }}>
+            <fieldset>
+                {{ form_label(form.nombre, 'Nombre') }}
+                {{ form_errors(form.nombre) }}
+                {{ form_widget(form.nombre,{ 'attr':{
+                    'placeholder':'Escribe un nombre para el Tema Abierto'}}) }}
+
+                {{ form_label(form.descripcion, 'Descripción') }}
+                {{ form_errors(form.descripcion) }}
+                {{ form_widget(form.descripcion,{ 'attr':{
+                    'placeholder':'Escribe una descripbión para el Tema Abierto'}}) }}
+
+
+                {{ form_label(form.solucion, 'Solución') }}
+                {{ form_errors(form.solucion) }}
+                {{ form_widget(form.solucion,{ 'attr':{
+                    'placeholder':'Si ya existe una solución o propuesta escribela aquí'}}) }}
+
+                {{ form_label(form.fechaLimite, 'Fecha Límite') }}
+                {{ form_errors(form.fechaLimite) }}
+                {{ form_widget(form.fechaLimite,{ 'attr':{
+                    'placeholder':'Selecciona la fecha límite para resolver el Tema Abierto'}}) }}
+
+                <div class='checkbox'>
+
+                	{{ form_widget(form.finalizado) }}
+	                {{ form_label(form.finalizado, '¿Ha sido resuelto el Tema Abierto?') }}
+	                {{ form_errors(form.finalizado) }}
+
+	            </div>
+
+                {{ form_label(form.usuarios, 'Elige un responsable para el Tema Abierto') }}
+                {{ form_errors(form.usuarios) }}
+                {{ form_widget(form.usuarios) }}
+
+            </fieldset>
+
+             {{form_rest(form)}}
+
+			    <input id="submit" type="submit" value="Guardar Cambios" />
+</form>
+
+<script type="text/javascript">
+$(document).ready(function(){
+                $(".date").datepicker({ dateFormat: 'dd-mm-yy', changeYear: true, changeMonth: true,  yearRange: '-100:+0'});
+                $(".date").datepicker( "option", "showAnim", "blind" );
+                $("select").selectBoxIt({downArrowIcon: "icon-hand-down"});
+            });
+
+</script>

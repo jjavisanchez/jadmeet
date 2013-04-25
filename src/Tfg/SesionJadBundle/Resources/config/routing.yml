@@ -1,0 +1,78 @@
+jad_dentro_sesion:
+       pattern:  /{rolusuario}/jad/{nombreJad}/workshop/{nombreSesion}/inworkshop
+       defaults: { _controller: SesionJadBundle:Default:inWorkshop }
+admin_window:
+       pattern:  /{rolusuario}/jad/{nombreJad}/workshop/{nombreSesion}/inworkshop/admin
+       defaults: { _controller: SesionJadBundle:Default:inWorkshopAdmin }
+       options:
+        expose: true
+admin_window_agenda:
+       pattern:  /{rolusuario}/jad/{nombreJad}/workshop/{nombreSesion}/inworkshop/admin/agenda
+       defaults: { _controller: SesionJadBundle:Default:inWorkshopAdminAgenda }
+       options:
+        expose: true
+admin_window_turnos:
+       pattern:  /{rolusuario}/jad/{nombreJad}/workshop/{nombreSesion}/inworkshop/admin/turnos
+       defaults: { _controller: SesionJadBundle:Default:inWorkshopAdminTurnos }
+       options:
+        expose: true
+admin_window_objetivos:
+       pattern:  /{rolusuario}/jad/{nombreJad}/workshop/{nombreSesion}/inworkshop/admin/objetivos
+       defaults: { _controller: SesionJadBundle:Default:inWorkshopAdminObjetivos }
+       options:
+        expose: true
+admin_window_acuerdos:
+       pattern:  /{rolusuario}/jad/{nombreJad}/workshop/{nombreSesion}/inworkshop/admin/acuerdos
+       defaults: { _controller: SesionJadBundle:Default:inWorkshopAdminAcuerdos }
+       options:
+        expose: true
+admin_window_temasAbiertos:
+       pattern:  /{rolusuario}/jad/{nombreJad}/workshop/{nombreSesion}/inworkshop/admin/temasabiertos
+       defaults: { _controller: SesionJadBundle:Default:inWorkshopAdminTemasAbiertos }
+       options:
+        expose: true
+admin_window_restricciones:
+       pattern:  /{rolusuario}/jad/{nombreJad}/workshop/{nombreSesion}/inworkshop/admin/restricciones
+       defaults: { _controller: SesionJadBundle:Default:inWorkshopAdminRestricciones }
+       options:
+        expose: true
+admin_window_pasarTurno:
+       pattern:  /{rolusuario}/jad/{nombreJad}/workshop/{nombreSesion}/inworkshop/admin/pasarTurno/{id}
+       defaults: { _controller: SesionJadBundle:Default:inWorkshopAdminPasarTurno }
+       options:
+        expose: true
+admin_window_ocultar_pantalla:
+       pattern:  /{rolusuario}/jad/{nombreJad}/workshop/{nombreSesion}/inworkshop/admin/ocultarpantalla
+       defaults: { _controller: SesionJadBundle:Default:inWorkshopAdminOcultarPantalla }
+       options:
+        expose: true
+admin_window_mostrar_pantalla:
+       pattern:  /{rolusuario}/jad/{nombreJad}/workshop/{nombreSesion}/inworkshop/admin/mostrarpantalla
+       defaults: { _controller: SesionJadBundle:Default:inWorkshopAdminMostrarPantalla }
+       options:
+        expose: true admin_window_punto_anterior
+admin_window_punto_siguiente:
+       pattern:  /{rolusuario}/jad/{nombreJad}/workshop/{nombreSesion}/inworkshop/admin/puntosiguiente
+       defaults: { _controller: SesionJadBundle:Default:inWorkshopAdminMostrarPuntoSiguiente }
+       options:
+        expose: true
+admin_window_punto_anterior:
+       pattern:  /{rolusuario}/jad/{nombreJad}/workshop/{nombreSesion}/inworkshop/admin/puntoanterior
+       defaults: { _controller: SesionJadBundle:Default:inWorkshopAdminMostrarPuntoAnterior }
+       options:
+        expose: true
+admin_window_acuerdos_eliminar:
+       pattern:  /{rolusuario}/jad/{nombreJad}/workshop/{nombreSesion}/inworkshop/admin/eliminaracuerdo/{id}
+       defaults: { _controller: SesionJadBundle:Default:inWorkshopAdminEliminarAcuerdo }
+       options:
+        expose: true
+admin_window_acuerdos_editar:
+       pattern:  /{rolusuario}/jad/{nombreJad}/workshop/{nombreSesion}/inworkshop/admin/editaracuerdo/{id}
+       defaults: { _controller: SesionJadBundle:Default:inWorkshopAdminEditarAcuerdo }
+       options:
+        expose: true
+admin_window_tema_abierto_editar:
+       pattern:  /{rolusuario}/jad/{nombreJad}/workshop/{nombreSesion}/inworkshop/admin/editartemaabierto/{id}
+       defaults: { _controller: SesionJadBundle:Default:inWorkshopAdminEditarTemaAbierto }
+       options:
+        expose: true

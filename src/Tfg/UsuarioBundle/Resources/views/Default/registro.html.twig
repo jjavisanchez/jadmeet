@@ -1,0 +1,108 @@
+{%extends '::base.html.twig'%}
+
+{% block stylesheets %}
+    {{parent()}}
+    <link rel="stylesheet" href="{{asset('bundles/usuario/css/portada.css')}}" type="text/css" media="all" />
+    <link rel="stylesheet" href="{{asset('bundles/usuario/css/registro.css')}}" type="text/css" media="all" />
+{% endblock %}
+
+{% block logotype %}
+    <a href="{{path('inicio')}}" title="Home Page">
+        <img id="logo" src="{{asset('images/logo.png')}}" alt="Logo de la aplicación" />
+        <h1 id="title">{% block headertitle %} JadMeetUs {% endblock %}</h1>
+    </a>
+{% endblock logotype %}
+
+{% block menu %}
+<!--
+    <li>
+        <a  class="select" href="">
+            <i class="icon_about"></i>
+                <span class="title">Registro</span>
+                <span class="description">
+                    Únete
+                </span>
+        </a>
+    </li>
+-->
+<li><a href=""><span class="text">Registro</span></a></li>
+{% endblock %}
+
+{% block main %}
+<aside>
+
+    <h3>Una vez te hayas registrado podrás...</h3>
+        <p>Planificar un proyecto JAD donde serás el coordinador, unirte a sesiones JAD...</p>
+    </aside>
+
+ <header class="body">
+     <h1>Rellena el formulario</h1>
+    </header>
+
+    <section class="body">
+        <form action="{{path('usuario_registro')}}" method="post" {{ form_enctype(formulario) }}>
+
+             {{ form_errors(formulario) }}
+
+            <fieldset>
+                {{ form_label(formulario.nombre, 'Nombre') }}
+                {{ form_errors(formulario.nombre) }}
+                {{ form_widget(formulario.nombre,{ 'attr':{
+                    'placeholder':'Escribe tu nombre'}}) }}
+
+                {{ form_label(formulario.apellidos, 'Apellidos') }}
+                {{ form_errors(formulario.apellidos) }}
+                {{ form_widget(formulario.apellidos,{ 'attr':{
+                    'placeholder':'Escribe tus apellidos'}}) }}
+
+                {{ form_label(formulario.email, 'Email') }}
+                {{ form_errors(formulario.email) }}
+                {{ form_widget(formulario.email,{ 'attr':{
+                    'placeholder':'Escribe tu mail'}}) }}
+
+                {{ form_label(formulario.password.first, 'Contraseña') }}
+                {{ form_widget(formulario.password.first,{ 'attr':{
+                    'placeholder':'Escribe tu contraseña'}}) }}
+                {{ form_errors(formulario.password) }}
+                {{ form_widget(formulario.password.second,{ 'attr':{
+                    'placeholder':'Escribe otra vez la contraseña'}}) }}
+
+                {{ form_label(formulario.fecha_nacimiento, 'Fecha Nacimiento') }}
+                {{ form_errors(formulario.fecha_nacimiento) }}
+                {{ form_widget(formulario.fecha_nacimiento,{ 'attr':{
+                    'placeholder':'Selecciona tu fecha de nacimiento'}}) }}
+
+
+                {{ form_label(formulario.ciudad, 'Ciudad') }}
+                {{ form_errors(formulario.ciudad) }}
+                {{ form_widget(formulario.ciudad,{ 'attr':{
+                    'placeholder':'Escribe tu ciudad'}}) }}
+
+                {{ form_label(formulario.titulacion, 'Titulación') }}
+                {{ form_errors(formulario.titulacion) }}
+                {{ form_widget(formulario.titulacion,{ 'attr':{
+                    'placeholder':'Escribe la titulación que posees'}}) }}
+
+                {{ form_label(formulario.perfil, 'Perfil') }}
+                {{ form_errors(formulario.perfil) }}
+                {{ form_widget(formulario.perfil,{ 'attr':{
+                    'placeholder':'Cuenta algo sobre ti'}}) }}
+            </fieldset>
+
+             {{form_rest(formulario)}}
+
+           <input id="submit" class="boton" type="submit" value="Registrarme" />
+        </form>
+    </section>
+
+</section>
+{% endblock %}
+{% block javascripts %}
+{{ parent() }}
+<script type="text/javascript">
+    $(function(){
+        $(".date").datepicker({ dateFormat: 'dd-mm-yy', changeYear: true, changeMonth: true,  yearRange: '-100:+0'});
+        $(".date").datepicker( "option", "showAnim", "blind" );
+    });
+</script>
+{% endblock %}

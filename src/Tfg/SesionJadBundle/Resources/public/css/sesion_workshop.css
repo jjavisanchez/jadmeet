@@ -1,0 +1,536 @@
+@font-face{
+    font-family:'KlavikaBold';
+    src: url(fonts/Klavika-Bold.otf);
+ }
+
+ @font-face{
+    font-family:'klavikaLight';
+    src: url(fonts/Klavika-Light.otf);
+}
+
+#main-container{
+    background: url(../images/wood_240x768.png)
+}
+.log_out{
+    background: #43AAD3;
+}
+
+.boton_log_out_bar_left{
+    float:left;
+    margin-left: 5em;
+
+}
+
+.boton_log_out_bar_right{
+    float:right;
+    margin-right: 5em;
+
+}
+
+#general_info{
+    position:absolute;
+    height: 80px;
+    width: 70%;
+    right: 5%;
+}
+
+/* CSS para reloj v2*/
+#clock{
+    position: relative;
+    display: inline;
+    top:7px;
+    width: 360px;
+    height:80px;
+}
+
+.clock {
+
+    float: left;
+    margin-right: 40px;
+}
+.display {
+    background-color: #eeeeee;
+    position: relative;
+    top: 8px;
+    left: 8px;
+    width: 64px;
+    height: 64px;
+    border-radius: 32px;
+    text-align: center;
+    line-height: 64px;
+    font-family:"Lucida Sans Unicode", "Lucida Grande", sans-serif;
+    font-size:30px;
+    text-shadow:4px 4px 5px #ccc;
+}
+.ring {
+    background-color: #8EC926;
+    position: absolute;
+    width: 80px;
+    height: 80px;
+    border-radius: 40px;
+    clip: rect(0px, 40px, 80px, 0px);
+}
+.m .ring {
+    background-color: #43AAD3;
+}
+.h .ring {
+    background-color: #E75957;
+}
+.hold {
+    background-color: #666666;
+    position: absolute;
+    width: 80px;
+    height: 80px;
+    border-radius: 40px;
+    clip: rect(0px, 80px, 80px, 40px);
+}
+.half2 {
+    transform:rotate(180deg);
+    -moz-transform:rotate(180deg);
+    -ms-transform:rotate(180deg);
+    -o-transform:rotate(180deg);
+    -webkit-transform:rotate(180deg);
+}
+
+#container_jad_title{
+    position: relative;
+    height: 60px;
+    padding: 6px;
+    margin-left: 69px;
+    float: right;
+    right: 0;
+    top: -55px;
+    width: 30%;
+    margin-left: 100%;
+    background: #eeeeee;
+    border: 2px solid #666666;
+    color:#666666;
+
+
+    -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
+    border-radius: 3px;
+
+    -moz-box-shadow: 2px 2px 4px #535353;
+    -webkit-box-shadow: 2px 2px 4px #535353;
+    box-shadow: 2px 2px 4px #535353;
+}
+
+#container_jad_objectives{
+    position: relative;
+    height: 60px;
+    padding: 6px;
+    float: left;
+    left: 34%;
+    top: -131px;
+    width: 30%;
+
+    background: #eeeeee;
+    border: 2px solid #666666;
+    color:#666666;
+
+
+    -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
+    border-radius: 3px;
+
+    -moz-box-shadow: 2px 2px 4px #535353;
+    -webkit-box-shadow: 2px 2px 4px #535353;
+    box-shadow: 2px 2px 4px #535353;
+}
+
+#jad_title{
+    width: 100%;
+    font-family: klavikaBold;
+    text-align:center;
+    line-height: 30px;
+}
+
+#jad_title h4{
+    display: inline;
+}
+
+a:link{color:white;}
+a:visited{color:white;}
+a:over{color:black;}
+
+.info_permanente{
+    position: absolute;
+    top: 24px;
+    bottom: 0;
+    overflow: hidden;
+    left: 0;
+    width: 20%;
+    background: #EEEEEE;
+    border-right: 2px solid #353535;
+}
+
+.info_permanente h2{
+    font-family: klavikaBold;
+    font-size: 2em;
+    font-weight: bold;
+    color: white;
+    background: #353535;
+    text-align: center;
+    margin: 0 auto;
+    padding: .3em;
+}
+
+.info_permanente h3 {
+    font-family: klavikaBold;
+    font-size: 1.5em;
+    font-weight: bold;
+    color: #666;
+    text-align: center;
+    margin: 0 auto;
+    padding-top: 2em;
+}
+
+.numberCirlce{
+	-webkit-border-radius: 999px;
+    -moz-border-radius: 999px;
+    border-radius: 999px;
+    behavior: url(PIE.htc);
+
+    width: 25px;
+    height: 18px;
+    padding: 5px;
+
+    display: inline-table;
+	margin-bottom: 10px;
+	margin-right: 5px;
+	margin-left: 10px;
+
+    background: #8EC926;
+    border: 1px dashed #666;
+    color: #666;
+    text-align: center;
+
+    font-family: klavikaBold;
+    font-size: 1.5em;
+    font-weight: bold;
+}
+
+#pantalla_A{
+    position:relative;
+    top:0;
+    left: 0;
+    height: 50%;
+}
+#pantalla_B{
+    position:relative;
+    top:50%;
+    left: 0;
+    height: 50%;
+
+}
+
+.screens{
+    overflow: scroll;
+    height: 100%;
+}
+
+
+ol{
+    counter-reset: li; /* Initiate a counter */
+    list-style: none; /* Remove default numbering */
+    *list-style: decimal; /* Keep using default numbering for IE6/7 */
+    padding: 0;
+    margin-bottom: 4em;
+    padding-left: 10px;
+}
+
+ol li{
+    display: table;
+    max-width: 55%;
+}
+
+ol ol{
+    margin: 0 0 0 2em; /* Add some left margin for inner lists */
+}
+
+a.arrow{
+    position: relative;
+    display:inline-table; ;
+    width: auto;
+    padding: .4em .4em .4em .8em;
+    *padding: .4em;
+    margin: .5em 0 .5em 2.5em;
+    /*background: #ddd;*/
+    text-decoration: none;
+
+
+    font-family: klavikaLight;
+    font-size: 1.5em;
+    font-weight: bold;
+    color: #666;
+}
+
+a.arrow-current{
+    position: relative;
+    display: block;
+    padding: .4em .4em .4em .8em;
+    *padding: .4em;
+    margin: .5em 0 .5em 2.5em;
+    /*background: #ddd;*/
+    text-decoration: none;
+
+
+    font-family: klavikaBold;
+    font-size: 1.5em;
+    font-weight: bold;
+    color: #666;
+}
+
+.rectangle-list a:hover{
+   /* background: #eee;*/
+}
+
+a.arrow:before{
+    content: counter(li);
+    counter-increment: li;
+    position: absolute;
+    left: -2.5em;
+    top: 50%;
+    margin-top: -1em;
+    background: #8EC926;
+    height: 2em;
+    width: 2em;
+    line-height: 2.1em;
+    text-align: center;
+    font-weight: bold;
+}
+
+a.arrow-current:before{
+    content: counter(li);
+    counter-increment: li;
+    position: absolute;
+    left: -2.5em;
+    top: 50%;
+    margin-top: -1em;
+    background: #E75957;
+    height: 2em;
+    width: 2em;
+    line-height: 2.1em;
+    text-align: center;
+    font-weight: bold;
+    color:white;
+}
+
+a.arrow:after{
+    position: absolute;
+    content: '';
+    border: .5em solid transparent;
+    left: -1em;
+    top: 50%;
+    margin-top: -.5em;
+
+}
+
+a.arrow-current:after{
+    position: absolute;
+    content: '';
+    border: .5em solid transparent;
+    left: -1em;
+    top: 50%;
+    margin-top: -.5em;
+
+}
+
+a.arrow:after{
+    left: -.5em;
+    border-left-color: #8EC926;
+
+}
+
+a.arrow-current:after{
+    left: -.5em;
+    border-left-color: #E75957;
+
+}
+
+.icon-user{
+
+    list-style: none; /* Remove default numbering */
+    padding: 0;
+    padding-left: 10px;
+    color:#666;
+    max-height: 5.5em;
+}
+
+.icon-user a{
+    position: relative;
+    display: table-cell;
+    padding: 0em .4em 0em 3em;
+    *padding: 0em;
+    margin: 0em 1.5em 0em;
+    color:#666;
+    text-decoration: none;
+    font-family: klavikaLight;
+    font-size: 1.5em;
+    font-weight: bold;
+    top:-2.2em;
+}
+
+.icon-user-current a{
+    font-family: klavikaBold !important;
+}
+
+.icon-user:before{
+    left: 2.5em;
+    background: #8EC926;
+    height: 1.5em;
+    width: 1.5em;
+    line-height: 1.7em;
+    text-align: center;
+}
+
+.icon-user-current:before{
+    background: #E75957;
+    color:white;
+}
+
+li[class^="icon-"].icon-large::before{
+text-indent: 0em;
+}
+
+
+.diagram_container{
+
+    position:absolute;
+    right: 5%;
+    top: 110px;
+    bottom: 110px;
+    width: 70%;
+    margin:8px 0px 3px 0px;
+
+}
+
+.header_diagrama{
+    padding: 4px 4px 0px 4px;
+    background:  #666;
+    text-align: center;
+    font-family: klavikaLight;
+    text-decoration: none;
+    color: white;
+    text-align: center;
+    -moz-box-shadow: 2px 2px 4px #535353;
+    -webkit-box-shadow: 2px 2px 4px #535353;
+    box-shadow: 2px 2px 4px #535353;
+}
+
+.diagrama{
+
+    overflow: scroll;
+    width: 100%;
+    height: 80%;
+    margin:0px 0px 10px 0px;
+    -moz-box-shadow: 2px 2px 4px #535353;
+    -webkit-box-shadow: 2px 2px 4px #535353;
+    box-shadow: 2px 2px 4px #535353;
+
+}
+
+.borde_izq{
+    height: 100%;
+    width: 2%;
+    background: url(../images/grid_bg_border.png) 0 0 repeat-y;
+    float:left;
+}
+
+.diagrama_canvas{
+    background: url(../images/grid_bg_content.png) 0 0 repeat;
+    width: 98%;
+    height:100%;
+    float:right;
+}
+
+.figuras_candidatas{
+    overflow: scroll;
+    width: 100%;
+    height: 20%;
+    margin:0px 0px 3px 0px;
+    -moz-box-shadow: 2px 2px 4px #535353;
+    -webkit-box-shadow: 2px 2px 4px #535353;
+    box-shadow: 2px 2px 4px #535353;
+}
+
+.draggable{
+    cursor: move;
+    margin:5px;
+}
+
+.snodo{
+    position:absolute;
+    z-index:20;
+}
+
+#footer-container{
+    height: 0;
+    border-top:    20px solid #353535;
+}
+
+
+
+
+.note {
+   position:relative;
+   width:80%;
+   padding: .1em 5%;
+   margin-top: 4%;
+   margin-left: 5%;
+   margin-right: 5%;
+   color:#fff;
+   background:#3CB573;
+   overflow:hidden;
+}
+
+.note a{
+    color:white;
+    text-decoration: none;
+    text-align: justify;
+    font-family:'klavikaLight';
+}
+
+.note a h3{
+    padding-top: 0;
+    color: white;
+    font-weight: bold;
+    font-family:'KlavikaBold';
+}
+
+
+.note:before {
+   content:"";
+   position:absolute;
+   top:0;
+   right:0;
+   border-width:0 16px 16px 0;
+   border-style:solid;
+   border-color:#eee #eee #658E15 #658E15;
+   background:#658E15;
+   -webkit-box-shadow:0 1px 1px rgba(0,0,0,0.3), -1px 1px 1px rgba(0,0,0,0.2);
+   -moz-box-shadow:0 1px 1px rgba(0,0,0,0.3), -1px 1px 1px rgba(0,0,0,0.2);
+   box-shadow:0 1px 1px rgba(0,0,0,0.3), -1px 1px 1px rgba(0,0,0,0.2);
+   display:block; width:0; /* Firefox 3.0 damage limitation */
+}
+
+.note.rounded {
+   -webkit-border-radius:5px 0 5px 5px;
+   -moz-border-radius:5px 0 5px 5px;
+   border-radius:5px 0 5px 5px;
+}
+
+.note.rounded:before {
+   border-width:8px;
+   border-color:#eee #eee transparent transparent;
+   -webkit-border-bottom-left-radius:5px;
+   -moz-border-radius:0 0 0 5px;
+   border-radius:0 0 0 5px;
+}
+
+
+
+
+
+

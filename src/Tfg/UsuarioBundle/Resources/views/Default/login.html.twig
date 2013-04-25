@@ -1,0 +1,46 @@
+{%extends '::base.html.twig'%}
+
+{%block stylesheets%}
+    {{parent()}}
+    <link rel="stylesheet" href="{{asset('bundles/usuario/css/portada.css')}}" type="text/css" media="all" />
+{% endblock %}
+
+
+ {% block logotype %}
+    <a href="{{path('inicio')}}" title="Home Page">
+        <img id="logo" src="{{asset('images/logo.png')}}" alt="Logo de la aplicación" />
+        <h1 id="title">{% block headertitle %} JadMeetUs {% endblock %}</h1>
+    </a>
+{% endblock logotype %}
+
+{% block main %}
+<aside>
+
+    <h3>¿Qué es JadMeetUs?</h3>
+        <p>Resumen de la aplicación</p>
+    </aside>
+
+ <header class="body">
+     <h1>Autentícate</h1>
+ </header>
+{% block article %}
+       {% if error %}
+           <div>{{ error.message }}</div>
+        {% endif %}
+{%endblock%}
+    <section class="body">
+        <form action="{{ path('usuario_login_check') }}" method="post">
+
+            <label>Nombre</label>
+            <input name="_username" id="username" type="text" placeholder="Escribe tu nombre" value="{{ ultimo_usuario }}"/>
+
+            <label>Contraseña</label>
+            <input name="_password" id="password" type="password" placeholder="Escribe tu password">
+
+            <a href="{{ path('usuario_registro') }}"> <label id="registrate">Registrate</label></a>
+
+            <input id="submit" name="submit" type="submit" value="Acceder">
+
+        </form>
+    </section>
+{%endblock%}

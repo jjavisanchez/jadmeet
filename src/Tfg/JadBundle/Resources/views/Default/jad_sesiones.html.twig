@@ -1,0 +1,127 @@
+{%extends '::base.html.twig'%}
+
+{%block stylesheets%}
+{{parent()}}
+<link rel="stylesheet" href="{{asset('bundles/jad/css/jad_menu.css')}}" type="text/css" media="all" />
+<link rel="stylesheet" href="{{asset('css/fonts/font-awesome/css/font-awesome.css')}}">
+
+{%endblock%}
+{% block menu %}
+<!--
+    <li>
+      <a href="{{path('jad_home',{'rolusuario':rol.slug,'nombreJad':jad.slug})}}">
+        <i class="icon_about"></i>
+                <span class="title">Jad Menu</span>
+                <span class="description">
+                    Gestiónalo
+                </span>
+      </a>
+    </li>
+    <li class="select">
+      <a class="select" href="#">
+        <i class="icon_about"></i>
+                <span class="title">Workshops</span>
+                <span class="description">
+                    Accede a uno
+                </span>
+      </a>
+    </li>
+-->
+<li><a href="{{path('home_usuario')}}"><span class="text">Home</span></a></li>
+<li><a href="{{path('jad_home',{'rolusuario':rol.slug,'nombreJad':jad.slug})}}"><span class="text">JAD Menú</span></a></li>
+<li><a href=""><span class="text">Workshops</span></a></li>
+{% endblock %}
+
+          {%if is_granted('ROLE_USUARIO')%}
+          {%block log_out_bar%}
+
+                    {{app.user}}, {{rol.nombre}}
+                    <a href="{{ path('usuario_logout') }}">Cerrar sesión</a>
+           {%endblock%}
+          {%endif%}
+
+{% block main %}
+
+            <section class="container"><h3><span class="left ribbon"></span>JAD : {{jad}} <br><br> Lista de Workshops<span class="right ribbon"></span></h3></section>
+
+            <div id="resumen">
+              <aside id="asideResumen">
+
+                {% if rol.nombre == 'Coordinador' %}
+                    <h1>Crear Workshop</h1>
+                    <p>Como coordinador puedes programar un nuevo Workshpo al que podrás invitar a participatnes que pertenecen al JAD, adjuntar archivos para que los participantes se preparen la reunión, asignar claves del JAD para discutir...</p>
+                    <p>Tambien puedes ver un resumen de cada Workshop pasando el ratón por encima de los iconos que representan los diferentes Workshops.</p>
+                    <p>Además de poder utilizar la aplicación durante el Workshop con el fin de facilitarte la dirección del mismo.</p>
+                {% else %}
+                    <h1>Resumen Workshop</h1>
+                    <p>Para ver un Resumen de cada Workshop pasa e ratón por encima de los iconos.</p>
+                {% endif %}
+              </aside>
+            </div>
+
+            <nav id="colorNav">
+                <ul>
+                    {% set colors = [] %}
+
+                    {% if rol.nombre == 'Coordinador' %}
+                        <li class="green">
+                            <h4>Crear <br>Workshop</h4>
+                            <a class="icon-large icon-plus" href="#" onmouseover="showResumeCrear()"></a>
+                        </li>
+                    {% endif %}
+
+
+                    {% for sesion in sesiones %}
+
+                        {% set color %}{% render "JadBundle:Default:getColor" with {'colors':colors} %}{% endset %}
+
+                        {% set colors = colors|merge([color|trim]) %}
+                        <li class="{{ color }}">
+                            <h4>{{sesion.nombre}}</h4>
+                            <a class="icon-large" href="{{ path('jad_sesion', {'rolusuario':rol.slug,'nombreJad':jad.slug,'nombreSesion':sesion.slug}) }}" onmouseover="showResume({{ sesion.id }}, '{{sesion.nombre}}', '{{sesion.descripcion}}' )"></a>
+                            <a class = "delete">
+                                <i class="icon-remove-sign icon-large"></i>
+                            </a>
+                        </li>
+                    {% endfor %}
+                </ul>
+            </nav>
+{% endblock %}
+
+{% block javascripts %}
+{{ parent() }}
+
+<script type="text/javascript">
+
+function showResume(sesionId, sesionNombre, sesionDescripcion){
+
+     elementResumen = document.getElementById('resumen');
+     elementResumen.innerHTML = "<aside id='asideResumen'><h1>Workshop : "+ sesionNombre +"</h1><p>"+ sesionDescripcion +"</p>";
+
+    $.ajax({
+        type: "GET",
+        accepts:"application/json",
+        dataType: "json",
+        data: "sesionId=" +sesionId,
+        url:"{{ path('getInfoSesionJAD') }}",
+        async: false,
+        success: function(msg){
+            elementResumen = document.getElementById('asideResumen');
+
+            elementResumen.innerHTML += "<h3>Asistentes Confirmados</h3>";
+
+            $.each(msg, function(index,value){ $('#asideResumen').append((index+1) + ". "+ eval(value.usuario).nombre + " " + eval(value.usuario).apellidos + '<br>'); });
+
+
+        }
+    });
+}
+
+function showResumeCrear(){
+    elementResumen = document.getElementById('resumen');
+    elementResumen.innerHTML = "<aside id='asideResumen'><h1>Crear Workshop</h1><p>Como coordinador puedes programar un nuevo Workshpo al que podrás invitar a participatnes que pertenecen al JAD, adjuntar archivos para que los participantes se preparen la reunión, asignar claves del JAD para discutir...</p><p>Tambien puedes ver un resumen de cada Workshop pasando el ratón por encima de los iconos que representan los diferentes Workshops.</p><p>Además de poder utilizar la aplicación durante el Workshop con el fin de facilitarte la dirección del mismo.</p></aside>";
+}
+
+</script>
+
+{% endblock %}
