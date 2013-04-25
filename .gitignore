@@ -3,7 +3,7 @@
 /app/cache/*
 /app/logs/*
 /build/
-/composer.phar
+/vendor/
 
 # -- Composer -----------------------------------------
 composer.phar
