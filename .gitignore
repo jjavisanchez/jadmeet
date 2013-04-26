@@ -6,6 +6,9 @@
 /app/logs/*
 /build/
 /vendor/
+/src/Tfg/point.json
+/src/Tfg/screens.json
+/src/Tfg/turnos.json
 
 # -- Composer -----------------------------------------
 composer.phar
