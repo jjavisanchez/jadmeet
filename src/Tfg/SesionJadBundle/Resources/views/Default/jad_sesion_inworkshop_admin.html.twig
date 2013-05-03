@@ -344,9 +344,9 @@
             }
         </script>
 
-        <script src="http://localhost:8080/sockjs-0.3.js"></script>
+        <script src="http://178.79.187.145:8080/sockjs-0.3.js"></script>
         <script>
-            var sock = new SockJS('http://localhost:8080/broadcast');
+            var sock = new SockJS('http://178.79.187.145:8080/broadcast');
             sock.onmessage = function (event) {
                 //Como recibimo un flujo de datos (string) que es un array codificado en su origen a json lo parseamos a json
                 mensaje = JSON.parse(event.data);

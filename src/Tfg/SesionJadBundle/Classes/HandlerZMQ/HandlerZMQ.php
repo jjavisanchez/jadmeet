@@ -20,6 +20,7 @@ class HandlerZMQ{
         $context = new \ZMQContext();
         $this->socket = $context->getSocket(\ZMQ::SOCKET_PUB);
         $this->socket->connect($this->host);
+	usleep(10000);
     }
 
     public function getHost(){
@@ -29,6 +30,7 @@ class HandlerZMQ{
     public function write($message)
     {
         $this->connectSocket();
+	usleep(10000);
         $this->socket->send((string)$message);
     }
 }
