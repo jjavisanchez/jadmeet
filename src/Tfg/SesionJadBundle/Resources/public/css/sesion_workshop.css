@@ -242,7 +242,7 @@ ol{
 
 ol li{
     display: table;
-    max-width: 55%;
+    /*max-width: 55%;*/
 }
 
 ol ol{
