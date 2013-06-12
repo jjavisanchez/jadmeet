@@ -1,11 +1,55 @@
 <div id="Restricciones">
 	        <h2 class="section">Restricciones</h2>
 	        <div id="botones">
-				<a class="mostrar button" href="">Mostrar en A</a>
-				<a class="mostrar button" href="">Mostrar en B</a>
-			</div>
-	        <ul id="result">
+				{% set contentA = screens.A %}
+			    {% set contentB = screens.B %}
 
+			    {% if contentA == 'restricciones' %}
+			        <a class="ocultar button" onclick="ocultar(this,'A','restricciones')">Ocultar en A</a>
+			    {% else %}
+					 <a class="mostrar button" onclick="mostrar(this,'A','restricciones')">Mostrar en A</a>
+				{% endif %}
+
+				{% if contentB == 'acuerdos' %}
+	                <a class="ocultar button" onclick="ocultar(this,'B','restricciones')">Ocultar en B</a>
+	            {% else %}
+	                <a class="mostrar button" onclick="mostrar(this,'B','restricciones')">Mostrar en B</a>
+        		{% endif %}
+
+        		<a id="form" class="button" onclick="mostrarFormNuevaRestriccion()">Nueva Restricción</a>
+
+			</div>
+
+			<form id="nueva_restriccion" action="javascript:insertarRestriccion()" method="POST" {{ form_enctype(form) }}>
+				<fieldset>
+					{{ form_label(form.nombre, 'Nombre') }}
+	                {{ form_errors(form.nombre) }}
+	                {{ form_widget(form.nombre,{ 'attr':{
+	                    'placeholder':'Escribe un nombre para la Restriccion'}}) }}
+
+	                {{ form_label(form.descripcion, 'Descripción') }}
+	                {{ form_errors(form.descripcion) }}
+	                {{ form_widget(form.descripcion,{ 'attr':{
+	                    'placeholder':'Escribe una descripción para la Restriccion'}}) }}
+				</fieldset>
+			    {{ form_rest(form) }}
+			    <input id="submit" type="submit" value="Crear Restricción" />
+			</form>
+
+
+	        <ul id="result">
+	        	<h3 class="subsection">Lista de Restricciones</h3>
+	        <ol id="lista_de_restricciones" class="lista_info">
+	        	{% for restriccion in restricciones %}
+                      <li id="restriccion_{{ loop.index }}">
+                          <a id="encabezado_restriccion_{{ loop.index }}" class="encabezado arrow">{{ restriccion.nombre }}</a>
+                          <a onclick="eliminarRestriccion('{{ restriccion.id }}')" class='delete'><i class='icon-remove' onmouseover="this.className='icon-remove-sign'" onmouseout="this.className='icon-remove'"></i></a>
+                          <a id="editar_restriccion_{{ loop.index }}" class='edit' onclick="editarRestriccion('{{ loop.index }}', '{{ restriccion.id }}')"><i id="figure_{{ loop.index }}" class="icon-pencil" onmouseover="this.className='icon-edit'" onmouseout="this.className='icon-pencil'"></i></a>
+                          <a id="descripcion_restriccion_{{ loop.index }}" class="content_list">{{ restriccion.descripcion }}</a>
+                      </li>
+
+                {% endfor %}
+	        </ol>
 	        </ul>
 </div>
 <div style="clear:both;"></div>

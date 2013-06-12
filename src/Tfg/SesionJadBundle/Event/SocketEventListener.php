@@ -117,6 +117,17 @@ class SocketEventListener{
 		        $object = json_encode($object);
 				break;
 			case 'objetivos':
+				$em = $this->container->get('doctrine')->getEntityManager();
+				$sesion = $em->getRepository('SesionJadBundle:SesionJad')->find($object['sesion']);
+				$jad = $sesion->getJad();
+				$contenido = array();
+				$contenido['propositos_jad'] = $jad->getPropositos();
+				$contenido['objetivos_direccion_jad'] = $jad->getObjetivosDireccion();
+				$contenido['descripcion_sesion'] = $sesion->getDescripcion();
+				$serializer = $this->container->get('serializer');
+				$contenido_JSON = $serializer->serialize($contenido,'json');
+				$object['contenido'] = $contenido_JSON;
+				$object = json_encode($object);
 				break;
 			case 'acuerdos':
 				$em = $this->container->get('doctrine')->getEntityManager();
@@ -135,8 +146,36 @@ class SocketEventListener{
 				$object = json_encode($object);
 				break;
 			case 'temasAbiertos':
+				$em = $this->container->get('doctrine')->getEntityManager();
+				$temas_abiertos = $em->getRepository('JadBundle:TemaAbierto')->findByJad($object['sesion']);
+				$contenido = array();
+				foreach($temas_abiertos as $tema_abierto){
+					$aux = array();
+					$aux['id'] = $tema_abierto->getId();
+					$aux['nombre'] = $tema_abierto->getNombre();
+					$aux['descripcion'] = $tema_abierto->getDescripcion();
+					$contenido[] = $aux;
+				}
+				$serializer = $this->container->get('serializer');
+				$contenido_JSON = $serializer->serialize($contenido,'json');
+				$object['contenido'] = $contenido_JSON;
+				$object = json_encode($object);
 				break;
 			case 'restricciones':
+				$em = $this->container->get('doctrine')->getEntityManager();
+				$restricciones = $em->getRepository('JadBundle:Restriccion')->findByJad($object['sesion']);
+				$contenido = array();
+				foreach($restricciones as $restriccion){
+					$aux = array();
+					$aux['id'] = $restriccion->getId();
+					$aux['nombre'] = $restriccion->getNombre();
+					$aux['descripcion'] = $restriccion->getDescripcion();
+					$contenido[] = $aux;
+				}
+				$serializer = $this->container->get('serializer');
+				$contenido_JSON = $serializer->serialize($contenido,'json');
+				$object['contenido'] = $contenido_JSON;
+				$object = json_encode($object);
 				break;
 			default:
 				$object['contenido'] = "La información solicitada no es correcta";
@@ -171,6 +210,36 @@ class SocketEventListener{
 	public function onRemoveAgreement(RemoveAgreementEvent $event){
 			$object = $event->getObject();
 			$this->handlerZMQ->write($object);
+	}
+
+	public function onNewOpenIsuue(NewOpenIssueEvent $event){
+			$object = $event->getObject();
+			$this->handlerZMQ->write($object);
+	}
+
+	public function onRemoveOpenIssue(RemoveOpenIssueEvent $event){
+		$object = $event->getObject();
+		$this->handlerZMQ->write($object);
+	}
+
+	public function onEditOpenIssue(EditOpenIssueEvent $event){
+			$object = $event->getObject();
+			$this->handlerZMQ->write($object);
+	}
+
+	public function onNewConstraint(NewConstraintEvent $event){
+		$object = $event->getObject();
+		$this->handlerZMQ->write($object);
+	}
+
+	public function onRemoveConstraint(RemoveConstraintEvent $event){
+		$object = $event->getObject();
+		$this->handlerZMQ->write($object);
+	}
+
+	public function onEditConstraint(EditConstraintEvent $event){
+		$object = $event->getObject();
+		$this->handlerZMQ->write($object);
 	}
 
 }

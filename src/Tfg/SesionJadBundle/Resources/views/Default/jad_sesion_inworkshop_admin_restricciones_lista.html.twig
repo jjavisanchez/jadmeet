@@ -1,0 +1,8 @@
+{% for restriccion in restricciones %}
+                      <li id="restriccion_{{ loop.index }}">
+                          <a id="encabezado_restriccion_{{ loop.index }}" class="encabezado arrow">{{ restriccion.nombre }}</a>
+                          <a onclick="eliminarRestriccion('{{ restriccion.id }}')" class='delete'><i class='icon-remove' onmouseover="this.className='icon-remove-sign'" onmouseout="this.className='icon-remove'"></i></a>
+                          <a id="editar_restriccion_{{ loop.index }}" class='edit' onclick="editarRestriccion('{{ loop.index }}', '{{ restriccion.id }}')"><i id="figure_{{ loop.index }}" class="icon-pencil" onmouseover="this.className='icon-edit'" onmouseout="this.className='icon-pencil'"></i></a>
+                          <a id="descripcion_restriccion_{{ loop.index }}" class="content_list">{{ restriccion.descripcion }}</a>
+                      </li>
+{% endfor %}

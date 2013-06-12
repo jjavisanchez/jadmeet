@@ -5,6 +5,7 @@
   <link rel="stylesheet" href="{{asset('bundles/sesionjad/css/sesion_menu.css')}}" type="text/css" media="all" />
   <link rel="stylesheet" href="{{asset('css/fonts/font-awesome/css/font-awesome.css')}}">
   <link rel="stylesheet" href="{{asset('bundles/sesionjad/css/sesion_workshop.css')}}" type="text/css" media="all" />
+  <link rel="stylesheet" href="{{ asset('bundles/sesionjad/css/grapheditor.css') }}" type="text/css"/>
 {% endblock %}
 {% block js %}
   {{parent()}}
@@ -12,10 +13,73 @@
   <script type="text/javascript" src="{{asset('js/jquery.jsPlumb-1.3.16-all-min.js')}}"></script>
   <script type="text/javascript" src="{{asset('js/jquery.jsPlumb-1.3.16-all.js')}}"></script>
   <script type="text/javascript" src="{{asset('js/jquery.ui.touch-punch.min.js')}}"></script>
-
   <script type="text/javascript" src="{{ asset('bundles/fosjsrouting/js/router.js') }}"></script>
   <script type="text/javascript" src="{{ path('fos_js_routing_js', {"callback": "fos.Router.setData"}) }}"></script>
+  <!-- SCRIPTS FOR GRAPHEDITOR-->
+  <script type="text/javascript">
+    // Public global variables
+    var MAX_REQUEST_SIZE = 10485760;
+    var MAX_AREA = 10000 * 10000;
 
+    // URLs for save and export
+    var EXPORT_URL = '/export';
+    var SAVE_URL = '/save';
+    var OPEN_URL = '/open';
+    var RESOURCES_PATH = "{{ asset('bundles/sesionjad/resources') }}";
+    var RESOURCE_BASE = "{{ asset('bundles/sesionjad/resources/grapheditor') }}";
+    var STENCIL_PATH = "{{ asset('bundles/sesionjad/stencils') }}";
+    var IMAGE_PATH = "{{ asset('bundles/sesionjad/images') }}";
+    var STYLE_PATH = "{{ asset('bundles/sesionjad/styles') }}";
+    var CSS_PATH = "{{ asset('bundles/sesionjad/styles') }}";
+    var OPEN_FORM = 'open.html';
+
+    // Specifies connection mode for touch devices (at least one should be true)
+    var tapAndHoldStartsConnection = true;
+    var showConnectorImg = true;
+
+    // Parses URL parameters. Supported parameters are:
+    // - lang=xy: Specifies the language of the user interface.
+    // - touch=1: Enables a touch-style user interface.
+    // - storage=local: Enables HTML5 local storage.
+    var urlParams = (function(url)
+    {
+      var result = new Object();
+      var idx = url.lastIndexOf('?');
+
+      if (idx > 0)
+      {
+        var params = url.substring(idx + 1).split('&');
+
+        for (var i = 0; i < params.length; i++)
+        {
+          idx = params[i].indexOf('=');
+
+          if (idx > 0)
+          {
+            result[params[i].substring(0, idx)] = params[i].substring(idx + 1);
+          }
+        }
+      }
+
+      return result;
+    })(window.location.href);
+
+    mxLoadResources = false;
+    mxBasePath = "{{ asset('bundles/sesionjad/src') }}";
+    mxLanguage = urlParams['lang'];
+    mxLanguages = ['de'];
+  </script>
+  <script type="text/javascript" src="{{asset('js/mxClient.js')}}"></script>
+  <script type="text/javascript" src="{{asset('js/Editor.js')}}"></script>
+  <script type="text/javascript" src="{{asset('js/Graph.js')}}"></script>
+  <script type="text/javascript" src="{{asset('js/Shapes.js')}}"></script>
+  <script type="text/javascript" src="{{asset('js/EditorUi.js')}}"></script>
+  <script type="text/javascript" src="{{asset('js/Actions.js')}}"></script>
+  <script type="text/javascript" src="{{asset('js/Menus.js')}}"></script>
+  <script type="text/javascript" src="{{asset('js/Sidebar.js')}}"></script>
+  <script type="text/javascript" src="{{asset('js/Toolbar.js')}}"></script>
+  <script type="text/javascript" src="{{asset('js/Dialogs.js')}}"></script>
+  <script type="text/javascript" src="{{asset('js/jscolor/jscolor.js')}}"></script>
 {% endblock %}
 
 {% block events %} onload=inicio() {% endblock events %}
@@ -73,6 +137,12 @@
                         </ul>
                       </div>
                 {% elseif content == 'objetivos' %}
+                  <h2>Objetivos</h2>
+                  <div id='objetivos' class='screens'>
+                    <p class='note'>{{  jad.propositos  }}</p>
+                    <p class='note'>{{  jad.objetivosDireccion  }}</p>
+                    <p class='note'>{{  sesion.descripcion }}</p>
+                  </div>
                 {% elseif content == 'acuerdos' %}
                     <h2>Acuerdos</h2>
                     <div id="acuerdos" class="screens">
@@ -83,7 +153,23 @@
                         </ul>
                     </div>
                 {% elseif content == 'temasAbiertos' %}
+                <h2>Temas Abiertos</h2>
+                    <div id="temas_abiertos" class="screens">
+                        <ul>
+                          {% for tema_abierto in temas_abiertos %}
+                              <li id="tema_abierto_{{ tema_abierto.id }}" class="note"><a id="tema_abierto_{{ loop.index }}"><h3>{{ loop.index }}. {{ tema_abierto.nombre }}</h3><p>{{ tema_abierto.descripcion }}</p></a></li>
+                          {% endfor %}
+                        </ul>
+                    </div>
                 {% elseif content == 'restricciones' %}
+                  <h2>Restricciones</h2>
+                  <div id="restricciones" class="screens">
+                        <ul>
+                          {% for restriccion in restricciones %}
+                              <li id="restriccion_{{ restriccion.id }}" class="note"><a id="restriccion_{{ loop.index }}"><h3>{{ loop.index }}. {{ restriccion.nombre }}</h3><p>{{ restriccion.descripcion }}</p></a></li>
+                          {% endfor %}
+                        </ul>
+                    </div>
                 {% else %}
                 {# Put here default case #}
                 {% endif %}
@@ -128,6 +214,12 @@
                         </ul>
                       </div>
                 {% elseif content == 'objetivos' %}
+                  <h2>Objetivos</h2>
+                  <div id='objetivos' class='screens'>
+                    <p class='note'>{{  jad.propositos  }}</p>
+                    <p class='note'>{{  jad.objetivosDireccion  }}</p>
+                    <p class='note'>{{  sesion.descripcion  }}</p>
+                  </div>
                 {% elseif content == 'acuerdos' %}
                   <h2>Acuerdos</h2>
                     <div id="acuerdos" class="screens">
@@ -138,7 +230,23 @@
                         </ul>
                     </div>
                 {% elseif content == 'temasAbiertos' %}
+                <h2>Temas Abiertos</h2>
+                    <div id="temas_abiertos" class="screens">
+                        <ul>
+                          {% for tema_abierto in temas_abiertos %}
+                              <li id="tema_abierto_{{ tema_abierto.id }}" class="note"><a id="tema_abierto_{{ loop.index }}"><h3>{{ loop.index }}. {{ tema_abierto.nombre }}</h3><p>{{ tema_abierto.descripcion }}</p></a></li>
+                          {% endfor %}
+                        </ul>
+                    </div>
                 {% elseif content == 'restricciones' %}
+                  <h2>Restricciones</h2>
+                  <div id="restricciones" class="screens">
+                        <ul>
+                          {% for restriccion in restricciones %}
+                              <li id="restriccion_{{ restriccion.id }}" class="note"><a id="restriccion_{{ loop.index }}"><h3>{{ loop.index }}. {{ restriccion.nombre }}</h3><p>{{ restriccion.descripcion }}</p></a></li>
+                          {% endfor %}
+                        </ul>
+                    </div>
                 {% else %}
                 {# Put here default case #}
                 {% endif %}
@@ -167,20 +275,49 @@
                   <div id="jad_title">JAD: {{jad.nombre}} <br>Workshop: {{sesion.nombre}}</div>
             </div>
 
-            <div id="container_jad_objectives">
+            <!--<div id="container_jad_objectives">
                   <div id="jad_title">Próposito del JAD: Resumido en 100 carácteres</div>
-            </div>
+            </div>-->
 
 </div>
+            <div id="diagram_container" class="diagram_container" >
+              <!--<div class="header_diagrama">Título del Modelo</div>-->
+              <div id="diagrama" class="diagrama">
+                <!--<div class="borde_izq"></div>-->
+                <div id="espacio_diagrama" >
+                    <script type="text/javascript">
+                        // Extends EditorUi to update I/O action states
+                        /*(function()
+                        {
+                          var editorUiInit = EditorUi.prototype.init;
 
-            <div class="diagram_container" >
-              <div class="header_diagrama">Título del Modelo</div>
-              <div class="diagrama">
-                <div class="borde_izq"></div>
-                <div id="espacio_diagrama" class="diagrama_canvas"></div>
+                          EditorUi.prototype.init = function()
+                          {
+                            editorUiInit.apply(this, arguments);
+                            this.actions.get('export').setEnabled(false);
+
+                            // Updates action states which require a backend
+                            if (!useLocalStorage)
+                            {
+                              mxUtils.post(OPEN_URL, '', mxUtils.bind(this, function(req)
+                              {
+                                var enabled = req.getStatus() != 404;
+                                this.actions.get('open').setEnabled(enabled || fileSupport);
+                                this.actions.get('import').setEnabled(enabled || fileSupport);
+                                this.actions.get('save').setEnabled(enabled);
+                                this.actions.get('saveAs').setEnabled(enabled);
+                                this.actions.get('export').setEnabled(enabled);
+                              }));
+                            }
+                          };
+                        })();*/
+                        var container = document.getElementById('espacio_diagrama');
+                        new EditorUi(new Editor(), container);
+                      </script>
+                </div>
               </div>
 
-              <div class="header_diagrama">Figuras Candidatas / Propuestas</div>
+              <!--<div class="header_diagrama">Figuras Candidatas / Propuestas</div>
               <div class="figuras_candidatas">
                 <div class="borde_izq">
                 </div>
@@ -188,16 +325,14 @@
                   <canvas id="figure_page" class="draggable" draggable="true" width="129" height="86"></canvas>
                   <canvas id="figure_page_stack" class="draggable" draggable="true" width="129" height="86"></canvas>
                 </div>
-              </div>
-
+              </div>-->
             </div>
 
 {% endblock %}
 
     {% block footer %}
         <div id="footer-container">
-
-      </div>
+        </div>
     {% endblock %}
 
 {% block javascripts %}
@@ -213,7 +348,8 @@
     }
 )};*/
 
-  var isFull = false;
+
+var isFull = false;
 
 fullscreen = function(e){
       if (e.webkitRequestFullScreen) {
@@ -247,11 +383,15 @@ document.getElementById('fullscreen').onclick = function(){
 
 }
 
+
 //Scripts para el diagrama
+/*
   var ctx = document.getElementById("figure_page").getContext("2d");
   page(ctx);
   var ctx = document.getElementById("figure_page_stack").getContext("2d");
   pageStack(ctx);
+
+
   var id_cont=0;
   var firstInstance = jsPlumb.getInstance();
 
@@ -339,11 +479,14 @@ jsPlumb.bind("ready", function () {
 });
 
 
+
+
+*/
   function inicio(){
-    document.getElementById('figure_page').ondragstart = cogerElemento;
+    /*document.getElementById('figure_page').ondragstart = cogerElemento;
     document.getElementById('figure_page_stack').ondragstart = cogerElemento;
     document.getElementById('espacio_diagrama').ondragover = sobreEspacio;
-    document.getElementById('espacio_diagrama').ondrop = soltarElemento;
+    document.getElementById('espacio_diagrama').ondrop = soltarElemento;*/
 
     if( !($('#pantalla_A').children().length > 0 ) && ($('#pantalla_B').length > 0) ){
         $('#pantalla_A').remove();
@@ -354,7 +497,7 @@ jsPlumb.bind("ready", function () {
          $('#pantalla_A').css('height','100%');
     }
   }
-
+/*
   // Función que gestiona el momento en que
   // un elemento comienza a ser arrastrado.
   function cogerElemento(e){
@@ -430,7 +573,9 @@ jsPlumb.bind("ready", function () {
       cerrojo = false;
 
     }
-  }
+  }*/
+
+
 
   function adminWindow(rolSlug, jadSlug, workshopSlug){
     link = Routing.generate('admin_window',{"rolusuario": rolSlug, "nombreJad": jadSlug, "nombreSesion": workshopSlug });
@@ -611,12 +756,39 @@ sock.onmessage = function (event) {
                 }
                 break;
               case 'objetivos':
+                var objetivos = JSON.parse(mensaje.contenido);
                 if(mensaje.pantalla == 'A')
-                  {
-                    $('#info_permanente').prepend("<div id='pantalla_A'>"+ mensaje.info + mensaje.contenido+ "</div>");
+                {
+                    if($('#pantalla_A').length > 0){
+                    $('#pantalla_A').remove();
+                    }
+                    if( ($('#pantalla_A').length == 0) && ($('#pantalla_B').length == 0) ){
+                      var height = '100%';
+                    }else{
+                      var height = '50%';
+                    }
+
+                    if( ($('#pantalla_B').length > 0) ){
+                      $('#pantalla_B').css('height','50%');
+                    }
+
+                    $('#info_permanente').prepend("<div id='pantalla_A'><h2>Objetivos</h2><div id='objetivos' class='screens'><p class='note'>"+ objetivos.propositos_jad +"</p><p class='note'>"+ objetivos.objetivos_direccion_jad +"</p><p class='note'>"+ objetivos.descripcion_sesion +"</p></div></div>");
+                    $('#pantalla_A').css('height',height);
+
                   }
                   if(mensaje.pantalla == 'B'){
-                    $('#info_permanente').append("<div id='pantalla_B'>" + mensaje.info + mensaje.contenido + "</div>");
+                    if($('#pantalla_B').length > 0){
+                      $('#pantalla_B').remove();
+                    }
+                    if( ($('#pantalla_A').length == 0) && ($('#pantalla_B').length == 0) ){
+                      var height = '100%';
+                    }else { var height = '50%'; }
+                    if( ($('#pantalla_A').length > 0) ){
+                      $('#pantalla_A').css('height','50%');
+                    }
+
+                  $('#info_permanente').prepend("<div id='pantalla_B'><h2>Objetivos</h2><div id='objetivos' class='screens'><p class='note'>"+ objetivos.propositos_jad +"</p><p class='note'>"+ objetivos.objetivos_direccion_jad +"</p><p class='note'>"+ objetivos.descripcion_sesion +"</p></div></div>");
+                    $('#pantalla_B').css('height',height);
                   }
                   break;
               case 'acuerdos':
@@ -638,11 +810,10 @@ sock.onmessage = function (event) {
 
                     $('#info_permanente').prepend("<div id='pantalla_A'><h2>Acuerdos</h2><div id='acuerdos' class='screens'><ul></ul></div></div>");
                     $('#pantalla_A').css('height',height);
-                    $.each(acuerdos, function(index, acuerdo){
-                        $('#pantalla_A #acuerdos ul').append("<li id="+acuerdo.id+" class='note'><a id='acuerdo_"+ (index+1) +"'> <h3>"+ (index+1) + ". " + acuerdo.nombre + "</h3><p>"+acuerdo.descripcion+"</p></a></li>");
+                    $.each(acuerdos, function(i, acuerdo){
+                        $('#pantalla_A #acuerdos ul').append("<li id="+acuerdo.id+" class='note'><a id='acuerdo_"+ (i+1) +"'> <h3>"+ (i+1) + ". " + acuerdo.nombre + "</h3><p>"+acuerdo.descripcion+"</p></a></li>");
                     });
                   }
-
 
 
                   if(mensaje.pantalla == 'B')
@@ -659,27 +830,94 @@ sock.onmessage = function (event) {
 
                     $('#info_permanente').append("<div id='pantalla_B'><h2>Acuerdos</h2><div id='acuerdos' class='screens'><ul></ul></div></div>");
                     $('#pantalla_B').css('height',height);
-                    $.each(acuerdos, function(index, acuerdo){
-                        $('#pantalla_B #acuerdos ul').append("<li class='note'><a id='acuerdo_"+ (index+1) +"'> <h3>"+ (index+1) + ". " + acuerdo.nombre + "</h3><p>"+acuerdo.descripcion+"</p></a></li>");
+                    $.each(acuerdos, function(i, acuerdo){
+                        $('#pantalla_B #acuerdos ul').append("<li id="+acuerdo.id+" class='note'><a id='acuerdo_"+ (i+1) +"'> <h3>"+ (i+1) + ". " + acuerdo.nombre + "</h3><p>"+acuerdo.descripcion+"</p></a></li>");
                     });
                   }
                 break;
               case'temasAbiertos':
-              if(mensaje.pantalla == 'A')
+              var temas_abiertos = JSON.parse(mensaje.contenido);
+                if(mensaje.pantalla == 'A')
                 {
-                  $('#info_permanente').prepend("<div id='pantalla_A'>"+ mensaje.info + mensaje.contenido+ "</div>");
-                }
-                if(mensaje.pantalla == 'B'){
-                  $('#info_permanente').append("<div id='pantalla_B'>" + mensaje.info + mensaje.contenido + "</div>");
-                }
-                break;
+                    if($('#pantalla_A').length > 0){
+                    $('#pantalla_A').remove();
+                    }
+                    if( ($('#pantalla_A').length == 0) && ($('#pantalla_B').length == 0) ){
+                      var height = '100%';
+                    }else{
+                      var height = '50%';
+                    }
+
+                    if( ($('#pantalla_B').length > 0) ){
+                      $('#pantalla_B').css('height','50%');
+                    }
+
+                    $('#info_permanente').prepend("<div id='pantalla_A'><h2>Temas Abiertos</h2><div id='temas_abiertos' class='screens'><ul></ul></div></div>");
+                    $('#pantalla_A').css('height',height);
+                    $.each(temas_abiertos, function(i, tema_abierto){
+                        $('#pantalla_A #temas_abiertos ul').append("<li id=tema_abierto_"+tema_abierto.id+" class='note'><a id='tema_abierto_"+ (i+1) +"'> <h3>"+ (i+1) + ". " + tema_abierto.nombre + "</h3><p>"+tema_abierto.descripcion+"</p></a></li>");
+                    });
+                  }
+
+
+                  if(mensaje.pantalla == 'B')
+                  {
+                    if($('#pantalla_B').length > 0){
+                      $('#pantalla_B').remove();
+                    }
+                    if( ($('#pantalla_A').length == 0) && ($('#pantalla_B').length == 0) ){
+                      var height = '100%';
+                    }else { var height = '50%'; }
+                    if( ($('#pantalla_A').length > 0) ){
+                      $('#pantalla_A').css('height','50%');
+                    }
+
+                    $('#info_permanente').append("<div id='pantalla_B'><h2>Temas Abiertos</h2><div id='temas_abiertos' class='screens'><ul></ul></div></div>");
+                    $('#pantalla_B').css('height',height);
+                    $.each(temas_abiertos, function(i, tema_abierto){
+                        $('#pantalla_B #temas_abiertos ul').append("<li id=tema_abierto_"+tema_abierto.id+" class='note'><a id='tema_abierto_"+ (i+1) +"'> <h3>"+ (i+1) + ". " + tema_abierto.nombre + "</h3><p>"+tema_abierto.descripcion+"</p></a></li>");
+                    });
+                  }
+                  break;
               case 'restricciones':
-              if(mensaje.pantalla == 'A')
+              var restricciones = JSON.parse(mensaje.contenido);
+                if(mensaje.pantalla == 'A')
                 {
-                  $('#info_permanente').prepend("<div id='pantalla_A'>"+ mensaje.info + mensaje.contenido+ "</div>");
-                }
+                    if($('#pantalla_A').length > 0){
+                    $('#pantalla_A').remove();
+                    }
+                    if( ($('#pantalla_A').length == 0) && ($('#pantalla_B').length == 0) ){
+                      var height = '100%';
+                    }else{
+                      var height = '50%';
+                    }
+
+                    if( ($('#pantalla_B').length > 0) ){
+                      $('#pantalla_B').css('height','50%');
+                    }
+
+                    $('#info_permanente').prepend("<div id='pantalla_A'><h2>Restricciones</h2><div id='restricciones' class='screens'><ul></ul></div></div>");
+                    $('#pantalla_A').css('height',height);
+                    $.each(restricciones, function(i, restriccion){
+                        $('#pantalla_A #restricciones ul').append("<li id=restriccion_"+restriccion.id+" class='note'><a id='restriccion_"+ (i+1) +"'> <h3>"+ (i+1) + ". " + restriccion.nombre + "</h3><p>"+restriccion.descripcion+"</p></a></li>");
+                    });
+                  }
                 if(mensaje.pantalla == 'B'){
-                  $('#info_permanente').append("<div id='pantalla_B'>" + mensaje.info + mensaje.contenido + "</div>");
+                  if($('#pantalla_B').length > 0){
+                      $('#pantalla_B').remove();
+                    }
+                    if( ($('#pantalla_A').length == 0) && ($('#pantalla_B').length == 0) ){
+                      var height = '100%';
+                    }else { var height = '50%'; }
+                    if( ($('#pantalla_A').length > 0) ){
+                      $('#pantalla_A').css('height','50%');
+                    }
+
+                    $('#info_permanente').append("<div id='pantalla_B'><h2>Restricciones</h2><div id='restricciones' class='screens'><ul></ul></div></div>");
+                    $('#pantalla_B').css('height',height);
+                    $.each(restricciones, function(i, restriccion){
+                        $('#pantalla_B #restricciones ul').append("<li id=restriccion_"+restriccion.id+" class='note'><a id='restriccion_"+ (i+1) +"'> <h3>"+ (i+1) + ". " + restriccion.nombre + "</h3><p>"+restriccion.descripcion+"</p></a></li>");
+                    });
                 }
                 break;
               default:
@@ -711,7 +949,7 @@ sock.onmessage = function (event) {
               });
               break;
         case 'new.agreement':
-            var id_list= ($('#acuerdos ul').size()) +2;
+            var id_list= ($('#acuerdos ul li').size()) +1;
             $('#acuerdos ul').append("<li id="+mensaje.id+" class='note'><a id='acuerdo_"+id_list+"'><h3>"+id_list+". "+mensaje.nombre+"</h3><p>"+mensaje.descripcion+"</p></a></li>");
           break;
         case 'edit.agreement':
@@ -720,6 +958,28 @@ sock.onmessage = function (event) {
           break;
         case 'remove.agreement':
           $("[id="+mensaje.id+"]").remove();
+          break;
+        case 'new.openissue':
+           var id_list_open_issue = ($('#temas_abiertos ul li').size()) +1;
+           $('#temas_abiertos ul').append("<li id=tema_abierto_"+mensaje.id+" class='note'><a id='tema_abierto_"+id_list_open_issue+"'><h3>"+id_list_open_issue+". "+mensaje.nombre+"</h3><p>"+mensaje.descripcion+"</p></a></li>");
+          break;
+        case 'remove.openissue':
+          $("[id=tema_abierto_"+mensaje.id+"]").remove();
+          break;
+        case 'edit.openissue':
+        var id_list = ($("#temas_abiertos ul li").index($("#tema_abierto_"+mensaje.id+""))) + 1;
+          $("[id=tema_abierto_"+mensaje.id+"]").html("<a id='tema_abierto_"+id_list+"'><h3>"+id_list+". "+mensaje.nombre+"</h3><p>"+mensaje.descripcion+"</p></a>");
+        break;
+        case 'new.constraint':
+          var id_list_constraint = ($('#restricciones ul li').size()) +1;
+           $('#restricciones ul').append("<li id=restriccion_"+mensaje.id+" class='note'><a id='restriccion"+id_list_constraint+"'><h3>"+id_list_constraint+". "+mensaje.nombre+"</h3><p>"+mensaje.descripcion+"</p></a></li>");
+        break;
+        case 'remove.constraint':
+          $("[id=restriccion_"+mensaje.id+"]").remove();
+          break;
+        case 'edit.constraint':
+          var id_list = ($("#restricciones ul li").index($("#restriccion_"+mensaje.id+""))) + 1;
+          $("[id=restriccion_"+mensaje.id+"]").html("<a id='restriccion_"+id_list+"'><h3>"+id_list+". "+mensaje.nombre+"</h3><p>"+mensaje.descripcion+"</p></a>");
           break;
         default:
         console.log('mensaje.evento no es correcto');

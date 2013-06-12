@@ -16,9 +16,11 @@ use Tfg\SesionJadBundle\Entity\SesionJad;
 use Tfg\JadBundle\Entity\Supuesto;
 use Tfg\JadBundle\Entity\TemaAbierto;
 use Tfg\JadBundle\Entity\Restriccion;
+use Tfg\SesionJadBundle\Entity\PuntoAgenda;
 use Tfg\SesionJadBundle\Form\Type\SupuestoType;
 use Tfg\SesionJadBundle\Form\Type\TemaAbiertoType;
 use Tfg\SesionJadBundle\Form\Type\RestriccionType;
+use Tfg\SesionJadBundle\Form\Type\PuntoAgendaType;
 
 use Symfony\Component\HttpFoundation\Response;
 
@@ -28,6 +30,12 @@ use Tfg\SesionJadBundle\Event\RemoveTurnEvent;
 use Tfg\SesionJadBundle\Event\NewAgreementEvent;
 use Tfg\SesionJadBundle\Event\EditAgreementEvent;
 use Tfg\SesionJadBundle\Event\RemoveAgreementEvent;
+use Tfg\SesionJadBundle\Event\NewOpenIssueEvent;
+use Tfg\SesionJadBundle\Event\RemoveOpenIssueEvent;
+use Tfg\SesionJadBundle\Event\EditOpenIssueEvent;
+use Tfg\SesionJadBundle\Event\NewConstraintEvent;
+use Tfg\SesionJadBundle\Event\RemoveConstraintEvent;
+use Tfg\SesionJadBundle\Event\EditConstraintEvent;
 use Tfg\SesionJadBundle\Event\SocketEventListener;
 
 
@@ -121,6 +129,8 @@ class DefaultController extends Controller
         }
 
         $acuerdos = $em->getRepository('JadBundle:Supuesto')->findByJad($sesion);
+        $temas_abiertos = $em->getRepository('JadBundle:TemaAbierto')->findByJad($sesion);
+        $restricciones = $em->getRepository('JadBundle:Restriccion')->findByJad($sesion);
 
         return $this->render('SesionJadBundle:Default:jad_sesion_inworkshop.html.twig', array('sesion'=>$sesion,
                                                                                               'rol'=>$rol,
@@ -129,6 +139,8 @@ class DefaultController extends Controller
                                                                                               'turnos'=>$turnsList,
                                                                                               'puntoAgendaActual'=>$punto,
                                                                                               'screens'=>$screens,
+                                                                                              'temas_abiertos'=>$temas_abiertos,
+                                                                                              'restricciones'=>$restricciones,
                                                                                               'acuerdos'=>$acuerdos));
     }
 
@@ -299,7 +311,22 @@ class DefaultController extends Controller
         $em = $this->getDoctrine()->getEntityManager();
         $sesion = $em->getRepository('SesionJadBundle:SesionJad')->findOneBySlug($nombreSesion);
 
+        $bundlePath = $this->get('kernel')->locateResource('@SesionJadBundle');
+        $filename = $this->container->getParameter('file_activescreens');
+        $fullpath = "$bundlePath/$filename";
+        $screens = null;
+        if(file_exists($fullpath)){
+            //Crearmos y configuramos el handlerJSON para leer el fichero y cargar su contenido en una variable que pasaremos a la plantilla twig
+            $handlerScreen = $this->get('handlerJSONPantallas');
+            //Configuramos el handler mediante la inyeccion de dependencias al service (que es nuestro handlerJSON) a traves de setters
+            $handlerScreen->setPath($bundlePath);
+            $handlerScreen->setFilename($filename);
+            $handlerScreen->setEntityName('array<string,string>');
+            $screens = $handlerScreen->readFile();
+        }
+
         return $this->render('SesionJadBundle:Default:jad_sesion_inworkshop_admin_objetivos.html.twig', array('sesion'=>$sesion,
+                                                                                                           'screens'=>$screens,
                                                                                                            'rol'=>$rol,
                                                                                                            'jad'=>$jad));
     }
@@ -512,6 +539,26 @@ class DefaultController extends Controller
 
         $form = $this->createForm(new TemaAbiertoType('nuevo'), $tema_abierto, array('sesion'=>$sesion));
 
+
+        $bundlePath = $this->get('kernel')->locateResource('@SesionJadBundle');
+        $filename = $this->container->getParameter('file_activescreens');
+        $fullpath = "$bundlePath/$filename";
+        $screens = null;
+        if(file_exists($fullpath)){
+            //Crearmos y configuramos el handlerJSON para leer el fichero y cargar su contenido en una variable que pasaremos a la plantilla twig
+            $handlerScreen = $this->get('handlerJSONPantallas');
+            //Configuramos el handler mediante la inyeccion de dependencias al service (que es nuestro handlerJSON) a traves de setters
+            $handlerScreen->setPath($bundlePath);
+            $handlerScreen->setFilename($filename);
+            $handlerScreen->setEntityName('array<string,string>');
+            $screens = $handlerScreen->readFile();
+        }
+
+        $listener = $this->get('socketEventListener');
+        $dispatcher = $this->get('event_dispatcher');
+        $dispatcher->addListener(SocketEvents::NEW_OPENISSUE, array($listener, 'onNewOpenIsuue'));
+
+
          if ($peticion->getMethod() == 'POST') {
             $form->bindRequest($peticion);
 
@@ -531,21 +578,23 @@ class DefaultController extends Controller
                         $id_punto_actual = $punto_actual['punto'];
                     }
                     $punto_actual = $em->getRepository('SesionJadBundle:PuntoAgenda')->find($id_punto_actual);
+                    $temas_abiertos = $em->getRepository('JadBundle:TemaAbierto')->findByJad($sesion);
                     $tema_abierto->setPuntoAgenda($punto_actual);
                     $em->persist($tema_abierto);
                     $em->flush();
                     //lanzamos el evento new agreement.
-                    /*$mensajeZMQ = array('evento'=>SocketEvents::NEW_AGREEMENT, 'id'=>$supuesto->getId(), 'nombre'=>$supuesto->getNombre(), 'descripcion'=>$supuesto->getDescripcion());
+                    $mensajeZMQ = array('evento'=>SocketEvents::NEW_OPENISSUE, 'id'=>$tema_abierto->getId(), 'nombre'=>$tema_abierto->getNombre(), 'descripcion'=>$tema_abierto->getDescripcion());
                     $mensajeZMQ = json_encode($mensajeZMQ);
-                    $event = new NewAgreementEvent($mensajeZMQ);
-                    $dispatcher->dispatch(SocketEvents::NEW_AGREEMENT, $event);*/
+                    $event = new NewOpenIssueEvent($mensajeZMQ);
+                    $dispatcher->dispatch(SocketEvents::NEW_OPENISSUE, $event);
                 }
 
-                $acuerdos = $em->getRepository('JadBundle:Supuesto')->findByJad($sesion);
+                $temas_abiertos = $em->getRepository('JadBundle:TemaAbierto')->findByJad($sesion);
                 return $this->render('SesionJadBundle:Default:jad_sesion_inworkshop_admin_temasabiertos.html.twig', array('sesion'=>$sesion,
                                                                                                            'rol'=>$rol,
                                                                                                            'jad'=>$jad,
-                                                                                                           'acuerdos'=>$acuerdos,
+                                                                                                           'temas_abiertos'=>$temas_abiertos,
+                                                                                                           'screens' => $screens,
                                                                                                            'form'=>$form->createView()));
         }
 
@@ -554,19 +603,86 @@ class DefaultController extends Controller
                                                                                                            'rol'=>$rol,
                                                                                                            'jad'=>$jad,
                                                                                                            'temas_abiertos'=>$temas_abiertos,
+                                                                                                           'screens' => $screens,
                                                                                                            'form'=>$form->createView()));
     }
 
     public function inWorkshopAdminEditarTemaAbiertoAction($nombreSesion, $id){
         $em = $this->getDoctrine()->getEntityManager();
+        $rols = $this->getRequest()->getSession()->get('rol');
+        $rol = unserialize($rols);
+        $jad = $this->getRequest()->getSession()->get('jad');
+        $real_jad = $em->getRepository('JadBundle:Jad')->findOneBySlug($jad->getSlug());
         $sesion = $em->getRepository('SesionJadBundle:SesionJad')->findOneBySlug($nombreSesion);
         $tema_abierto = $em->getRepository('JadBundle:TemaAbierto')->find($id);
         $form = $this->createForm(new TemaAbiertoType('editar'), $tema_abierto, array('sesion'=>$sesion));
-        return $this->render('SesionJadBundle:Default:jad_sesion_inworkshop_admin_temasabiertos_form.html.twig', array('form'=>$form->createView()));
+
+        $listener = $this->get('socketEventListener');
+        $dispatcher = $this->get('event_dispatcher');
+        $dispatcher->addListener(SocketEvents::EDIT_OPENISSUE, array($listener, 'onEditOpenIssue'));
+
+        $peticion = $this->getRequest();
+        if ($peticion->getMethod() == 'POST' ) {
+            $form->bindRequest($peticion);
+
+                if ($form->isValid()) {
+                    $em->flush();
+                    //lanzamos el evento new agreement.
+                    $mensajeZMQ = array('evento'=>SocketEvents::EDIT_OPENISSUE, 'id'=>$tema_abierto->getId(), 'nombre'=>$tema_abierto->getNombre(), 'descripcion'=>$tema_abierto->getDescripcion());
+                    $mensajeZMQ = json_encode($mensajeZMQ);
+                    $event = new EditOpenIssueEvent($mensajeZMQ);
+                    $dispatcher->dispatch(SocketEvents::EDIT_OPENISSUE, $event);
+                }
+
+                $temas_abiertos = $em->getRepository('JadBundle:TemaAbierto')->findByJad($sesion);
+                return $this->render('SesionJadBundle:Default:jad_sesion_inworkshop_admin_temasabiertos_lista.html.twig', array(
+                                                                                                           'temas_abiertos'=>$temas_abiertos
+                                                                                                           ));
+        }
+
+        return $this->render('SesionJadBundle:Default:jad_sesion_inworkshop_admin_temasabiertos_form.html.twig', array('form'=>$form->createView(),
+                                                                                                                        'sesion' => $sesion,
+                                                                                                                        'jad' => $jad,
+                                                                                                                        'rol' => $rol,
+                                                                                                                        'tema_abierto'=>$tema_abierto));
+    }
+
+    public function inWorkshopAdminEliminarTemaAbiertoAction($nombreSesion, $id){
+        $em = $this->getDoctrine()->getEntityManager();
+
+        $jad = $this->getRequest()->getSession()->get('jad');
+        $sesion = $em->getRepository('SesionJadBundle:SesionJad')->findOneBySlug($nombreSesion);
+        $rols = $this->getRequest()->getSession()->get('rol');
+        $rol = unserialize($rols);
+
+        $listener = $this->get('socketEventListener');
+        $dispatcher = $this->get('event_dispatcher');
+        $dispatcher->addListener(SocketEvents::REMOVE_OPENISSUE, array($listener, 'onRemoveOpenIssue'));
+
+        $tema_abierto =  $em->getRepository('JadBundle:TemaAbierto')->find($id);
+
+         if (!$tema_abierto) {
+            throw $this->createNotFoundException(
+                'No tema abierto found for id '.$id
+            );
+        }
+        $em->remove($tema_abierto);
+        $em->flush();
+        //lanzamos el evento remove agreement.
+        $mensajeZMQ = array('evento'=>SocketEvents::REMOVE_OPENISSUE, 'id'=>$id);
+        $mensajeZMQ = json_encode($mensajeZMQ);
+        $event = new RemoveOpenIssueEvent($mensajeZMQ);
+        $dispatcher->dispatch(SocketEvents::REMOVE_OPENISSUE, $event);
+
+        $temas_abiertos = $em->getRepository('JadBundle:TemaAbierto')->findByJad($sesion);
+
+        return $this->render('SesionJadBundle:Default:jad_sesion_inworkshop_admin_temasabiertos_lista.html.twig', array(
+                                                                                                    'temas_abiertos'=>$temas_abiertos));
     }
 
     public function inWorkshopAdminRestriccionesAction($nombreSesion)
     {
+        $peticion = $this->getRequest();
         $jad = $this->getRequest()->getSession()->get('jad');
         $rols = $this->getRequest()->getSession()->get('rol');
 
@@ -577,10 +693,136 @@ class DefaultController extends Controller
 
         $em = $this->getDoctrine()->getEntityManager();
         $sesion = $em->getRepository('SesionJadBundle:SesionJad')->findOneBySlug($nombreSesion);
+        $real_jad = $em->getRepository('JadBundle:Jad')->findOneBySlug($jad->getSlug());
+
+        $restricciones = $em->getRepository('JadBundle:Restriccion')->findByJad($sesion);
+
+        $restriccion = new Restriccion();
+        $form = $this->createForm(new RestriccionType('nuevo'), $restriccion);
+
+        $bundlePath = $this->get('kernel')->locateResource('@SesionJadBundle');
+        $filename = $this->container->getParameter('file_activescreens');
+        $fullpath = "$bundlePath/$filename";
+        $screens = null;
+        if(file_exists($fullpath)){
+            //Crearmos y configuramos el handlerJSON para leer el fichero y cargar su contenido en una variable que pasaremos a la plantilla twig
+            $handlerScreen = $this->get('handlerJSONPantallas');
+            //Configuramos el handler mediante la inyeccion de dependencias al service (que es nuestro handlerJSON) a traves de setters
+            $handlerScreen->setPath($bundlePath);
+            $handlerScreen->setFilename($filename);
+            $handlerScreen->setEntityName('array<string,string>');
+            $screens = $handlerScreen->readFile();
+        }
+
+
+        $listener = $this->get('socketEventListener');
+        $dispatcher = $this->get('event_dispatcher');
+        $dispatcher->addListener(SocketEvents::NEW_CONSTRAINT, array($listener, 'onNewConstraint'));
+
+
+         if ($peticion->getMethod() == 'POST') {
+            $form->bindRequest($peticion);
+
+                if ($form->isValid()) {
+                    $restriccion->setJad($real_jad);
+                    $em = $this->getDoctrine()->getEntityManager();
+                    $em->persist($restriccion);
+                    $em->flush();
+                    //lanzamos el evento new constraint.
+                    $mensajeZMQ = array('evento'=>SocketEvents::NEW_CONSTRAINT, 'id'=>$restriccion->getId(), 'nombre'=>$restriccion->getNombre(), 'descripcion'=>$restriccion->getDescripcion());
+                    $mensajeZMQ = json_encode($mensajeZMQ);
+                    $event = new NewConstraintEvent($mensajeZMQ);
+                    $dispatcher->dispatch(SocketEvents::NEW_CONSTRAINT, $event);
+                }
+
+                $restricciones = $em->getRepository('JadBundle:Restriccion')->findByJad($sesion);
+                return $this->render('SesionJadBundle:Default:jad_sesion_inworkshop_admin_restricciones.html.twig', array('sesion'=>$sesion,
+                                                                                                           'rol'=>$rol,
+                                                                                                           'jad'=>$jad,
+                                                                                                           'restricciones'=>$restricciones,
+                                                                                                           'screens' => $screens,
+                                                                                                           'form'=>$form->createView()));
+        }
 
         return $this->render('SesionJadBundle:Default:jad_sesion_inworkshop_admin_restricciones.html.twig', array('sesion'=>$sesion,
                                                                                                            'rol'=>$rol,
-                                                                                                           'jad'=>$jad));
+                                                                                                           'jad'=>$jad,
+                                                                                                           'form'=>$form->createView(),
+                                                                                                           'screens'=>$screens,
+                                                                                                           'restricciones'=>$restricciones));
+    }
+
+    public function inWorkshopAdminEditarRestriccionAction($nombreSesion, $id){
+        $em = $this->getDoctrine()->getEntityManager();
+        $rols = $this->getRequest()->getSession()->get('rol');
+        $rol = unserialize($rols);
+        $jad = $this->getRequest()->getSession()->get('jad');
+        $real_jad = $em->getRepository('JadBundle:Jad')->findOneBySlug($jad->getSlug());
+        $sesion = $em->getRepository('SesionJadBundle:SesionJad')->findOneBySlug($nombreSesion);
+        $restriccion = $em->getRepository('JadBundle:Restriccion')->find($id);
+        $form = $this->createForm(new RestriccionType('editar'), $restriccion);
+
+        $listener = $this->get('socketEventListener');
+        $dispatcher = $this->get('event_dispatcher');
+        $dispatcher->addListener(SocketEvents::EDIT_CONSTRAINT, array($listener, 'onEditConstraint'));
+
+        $peticion = $this->getRequest();
+        if ($peticion->getMethod() == 'POST' ) {
+            $form->bindRequest($peticion);
+
+                if ($form->isValid()) {
+                    $em->flush();
+                    //lanzamos el evento new agreement.
+                    $mensajeZMQ = array('evento'=>SocketEvents::EDIT_CONSTRAINT, 'id'=>$restriccion->getId(), 'nombre'=>$restriccion->getNombre(), 'descripcion'=>$restriccion->getDescripcion());
+                    $mensajeZMQ = json_encode($mensajeZMQ);
+                    $event = new EditConstraintEvent($mensajeZMQ);
+                    $dispatcher->dispatch(SocketEvents::EDIT_CONSTRAINT, $event);
+                }
+
+                $restricciones = $em->getRepository('JadBundle:Restriccion')->findByJad($sesion);
+                return $this->render('SesionJadBundle:Default:jad_sesion_inworkshop_admin_restricciones_lista.html.twig', array(
+                                                                                                           'restricciones'=>$restricciones
+                                                                                                           ));
+        }
+
+        return $this->render('SesionJadBundle:Default:jad_sesion_inworkshop_admin_restricciones_form.html.twig', array('form'=>$form->createView(),
+                                                                                                                        'sesion' => $sesion,
+                                                                                                                        'jad' => $jad,
+                                                                                                                        'rol' => $rol,
+                                                                                                                        'restriccion'=>$restriccion));
+    }
+
+    public function inWorkshopAdminEliminarRestriccionAction($nombreSesion, $id){
+        $em = $this->getDoctrine()->getEntityManager();
+
+        $jad = $this->getRequest()->getSession()->get('jad');
+        $sesion = $em->getRepository('SesionJadBundle:SesionJad')->findOneBySlug($nombreSesion);
+        $rols = $this->getRequest()->getSession()->get('rol');
+        $rol = unserialize($rols);
+
+        $listener = $this->get('socketEventListener');
+        $dispatcher = $this->get('event_dispatcher');
+        $dispatcher->addListener(SocketEvents::REMOVE_CONSTRAINT, array($listener, 'onRemoveConstraint'));
+
+        $restriccion =  $em->getRepository('JadBundle:Restriccion')->find($id);
+
+         if (!$restriccion) {
+            throw $this->createNotFoundException(
+                'No restriccion found for id '.$id
+            );
+        }
+        $em->remove($restriccion);
+        $em->flush();
+        //lanzamos el evento remove agreement.
+        $mensajeZMQ = array('evento'=>SocketEvents::REMOVE_CONSTRAINT, 'id'=>$id);
+        $mensajeZMQ = json_encode($mensajeZMQ);
+        $event = new RemoveConstraintEvent($mensajeZMQ);
+        $dispatcher->dispatch(SocketEvents::REMOVE_CONSTRAINT, $event);
+
+        $restricciones = $em->getRepository('JadBundle:Restriccion')->findByJad($sesion);
+
+        return $this->render('SesionJadBundle:Default:jad_sesion_inworkshop_admin_restricciones_lista.html.twig', array(
+                                                                                                    'restricciones'=>$restricciones));
     }
 
     public function inWorkshopAdminPasarTurnoAction($nombreSesion, $id)
@@ -784,6 +1026,64 @@ class DefaultController extends Controller
             $handlerPunto->decrement($nuevo_id_punto_actual, $nuevo_orden_punto_actual);
         }
         return new Response();
+    }
+
+    public function documentosAction($nombreSesion){
+        $usuario = $this->get('security.context')->getToken()->getUser();
+        $em = $this->get('doctrine')->getEntityManager();
+        $sesion = $em->getRepository('SesionJadBundle:SesionJad')->findOneBySlug($nombreSesion);
+
+        $jad = $this->getRequest()->getSession()->get('jad');
+        $rols = $this->getRequest()->getSession()->get('rol');
+        $rol = unserialize($rols);
+
+
+
+
+        return $this->render('SesionJadBundle:Default:jad_sesion_documentos.html.twig',array('rol'=>$rol,
+                                                                            'sesion'=>$sesion,
+                                                                          'jad'=>$jad
+                                                                          ));
+    }
+
+        public function participantesAction($nombreSesion){
+        $usuario = $this->get('security.context')->getToken()->getUser();
+        $em = $this->get('doctrine')->getEntityManager();
+        $sesion = $em->getRepository('SesionJadBundle:SesionJad')->findOneBySlug($nombreSesion);
+
+        $jad = $this->getRequest()->getSession()->get('jad');
+        $rols = $this->getRequest()->getSession()->get('rol');
+        $rol = unserialize($rols);
+
+        $usuariosSistema = $em->getRepository('UsuarioBundle:Usuario')->findAll();
+
+        return $this->render('SesionJadBundle:Default:jad_sesion_participantes.html.twig',array('rol'=>$rol,
+                                                                            'sesion'=>$sesion,
+                                                                          'usuarios'=>$usuariosSistema,
+                                                                          'jad'=>$jad
+                                                                          ));
+    }
+
+    public function agendaAction($nombreSesion){
+        $usuario = $this->get('security.context')->getToken()->getUser();
+        $em = $this->get('doctrine')->getEntityManager();
+        $sesion = $em->getRepository('SesionJadBundle:SesionJad')->findOneBySlug($nombreSesion);
+
+        $jad = $this->getRequest()->getSession()->get('jad');
+        $rols = $this->getRequest()->getSession()->get('rol');
+        $rol = unserialize($rols);
+
+        $puntoAgenda = new PuntoAgenda();
+        $form = $this->createForm(new puntoAgendaType(), $puntoAgenda);
+
+        $puntos = $em->getRepository('SesionJadBundle:PuntoAgenda')->findAll();
+
+        return $this->render('SesionJadBundle:Default:jad_sesion_agenda.html.twig',array('rol'=>$rol,
+                                                                                         'form'=>$form->createView(),
+                                                                                        'sesion'=>$sesion,
+                                                                                        'puntos'=>$puntos,
+                                                                                        'jad'=>$jad
+                                                                                          ));
     }
 
 

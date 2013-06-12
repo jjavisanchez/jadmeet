@@ -44,19 +44,15 @@
 			 <ul>
 				 <li class="purple">
                     <h4>Agenda</h4>
-				 	<a class="icon-large icon-book" href="#"></a>
+				 	<a class="icon-large icon-book" href="{{path('jad_sesion_agenda',{'rolusuario':rol.slug,'nombreJad':jad.slug,'nombreSesion':sesion.slug})}}"></a>
 				 </li>
                  <li class="black">
                     <h4>Participantes</h4>
-				 	<a class="icon-large icon-group" href="#"></a>
+				 	<a class="icon-large icon-group" href="{{path('jad_sesion_participantes',{'rolusuario':rol.slug,'nombreJad':jad.slug,'nombreSesion':sesion.slug})}}"></a>
 				 </li>
-				 <!--<li class="black">
-                    <h4>Modelos</h4>
-				 	<a class="icon-large icon-sitemap" href="#"></a>
-				 </li>-->
                  <li class="yellow">
                     <h4>Documentos</h4>
-                    <a class="icon-large icon-folder-close" href="#"></a>
+                    <a class="icon-large icon-folder-close" href="{{path('jad_sesion_documentos',{'rolusuario':rol.slug,'nombreJad':jad.slug,'nombreSesion':sesion.slug})}}"></a>
 				 </li>
 
 				  {% if rol.nombre == 'Coordinador'%}

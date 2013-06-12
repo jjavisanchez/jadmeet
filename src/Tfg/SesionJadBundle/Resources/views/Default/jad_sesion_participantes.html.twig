@@ -1,0 +1,77 @@
+{% extends '::base.html.twig' %}
+
+{% block stylesheets %}
+{{parent()}}
+<link rel="stylesheet" href="{{asset('bundles/jad/css/jad_menu.css')}}" type="text/css" media="all" />
+<link rel="stylesheet" href="{{asset('css/fonts/font-awesome/css/font-awesome.css')}}">
+<link rel="stylesheet" href="{{asset('bundles/sesionjad/css/sesion_documentos.css')}}">
+{% endblock %}
+
+{% block js %}
+    {{ parent() }}
+    <script>
+          $(function() {
+            $( "ul.droptrue" ).sortable({
+              connectWith: "ul"
+            });
+
+            $( "ul.dropfalse" ).sortable({
+              connectWith: "ul",
+              dropOnEmpty: false
+            });
+
+            $( "#sortable1, #sortable2, #sortable3" ).disableSelection();
+          });
+    </script>
+{% endblock %}
+
+
+{% block menu %}
+<!--
+      <li>
+      <a  class="select" href="{{path('jad_home',{'rolusuario':rol.slug,'nombreJad':jad.slug})}}">
+        <i class="icon_about"></i>
+                <span class="title">JAD Menu</span>
+                <span class="description">
+                    Gestiónalo
+                </span>
+      </a>
+    </li>
+-->
+<li><a href="{{path('home_usuario')}}"><span class="text">Home</span></a></li>
+<li><a href="{{path('jad_home',{'rolusuario':rol.slug,'nombreJad':jad.slug})}}"><span class="text">JAD Menú</span></a></li>
+<li><a href="{{path('jad_sesiones',{'rolusuario':rol.slug,'nombreJad':jad.slug})}}"><span class="text">Workshops</span></a></li>
+<li><a href="{{ path('jad_sesion', {'rolusuario':rol.slug,'nombreJad':jad.slug,'nombreSesion':sesion.slug}) }}"><span class="text">Workshop Menú</span></a></li>
+<li><a ><span class="text">Docs</span></a></li>
+{% endblock %}
+
+          {% if is_granted('ROLE_USUARIO') %}
+          {% block log_out_bar %}
+                    {{app.user}}, {{rol.nombre}}
+                    <a href="{{ path('usuario_logout') }}">Cerrar sesión</a>
+           {% endblock %}
+          {% endif %}
+
+{% block main %}
+
+            <section class="container"><h3><span class="left ribbon"></span>Documentos<span class="right ribbon"></span></h3></section>
+
+            <div id="container_participantes">
+                <div id="container_lista_participantes">
+                    <div class="lcontNoInvitados">
+                        <h2>Usuarios invitados al JAD</h2>
+                        <ul id="sortable1" class="droptrue">
+                            {% for usuario in usuarios %}
+                                <li class="ui-state-default">{{ usuario }}</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                    <div class="lcontInvitados">
+                        <h2>Usuarios invitados al Workshop</h2>
+                        <ul id="sortable3" class="droptrue">
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+{% endblock %}

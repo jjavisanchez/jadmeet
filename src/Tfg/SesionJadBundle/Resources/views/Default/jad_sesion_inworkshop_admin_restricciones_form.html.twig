@@ -1,0 +1,15 @@
+<form id="edit_restriccion" action="javascript:guardarCambiosRestriccion({{ restriccion.id }})" method="POST" {{ form_enctype(form) }}>
+				<fieldset>
+					{{ form_label(form.nombre, 'Nombre') }}
+	                {{ form_errors(form.nombre) }}
+	                {{ form_widget(form.nombre,{ 'attr':{
+	                    'placeholder':'Escribe un nombre para la Restriccion'}}) }}
+
+	                {{ form_label(form.descripcion, 'Descripción') }}
+	                {{ form_errors(form.descripcion) }}
+	                {{ form_widget(form.descripcion,{ 'attr':{
+	                    'placeholder':'Escribe una descripción para la Restriccion'}}) }}
+				</fieldset>
+			    {{ form_rest(form) }}
+			    <input id="submit" type="submit" value="Guardar Cambios" />
+</form>

@@ -1,0 +1,635 @@
+@font-face {
+    font-family: 'ModernPictogramsNormal';
+    src: url('fonts/modernpics-webfont.eot');
+    src: url('fonts/modernpics-webfont.eot?#iefix') format('embedded-opentype'),
+         url('fonts/modernpics-webfont.woff') format('woff'),
+         url('fonts/modernpics-webfont.ttf') format('truetype'),
+         url('fonts/modernpics-webfont.svg#ModernPictogramsNormal') format('svg');
+    font-weight: normal;
+    font-style: normal;
+}
+
+#main{
+    padding: 0;
+}
+
+a{text-decoration: none;}
+
+form {
+
+    width:459px;
+    margin-top:3%;
+    margin-left: 10px;
+    margin-bottom: 12%;
+    height: auto;
+}
+
+p{
+    font-family: "KlavikaLight";
+    font-size: 1.5em;
+    color: #666;
+    padding: 0em .4em 0em .8em;
+    margin: .5em 0 0em 2.5em;
+}
+
+label{font-family: "KlavikaBold"; font-size: 1.3em;color: #666666;}
+
+input, textarea {
+    width:439px;
+    height:27px;
+    background:#efefef;
+    border:3px solid #dedede;
+    padding:10px;
+    margin-top:3px;
+    margin-bottom: 17px;
+    font-size:0.9em;
+    color:#3a3a3a;
+    border-radius:5px;
+    -moz-border-radius:5px;
+    -webkit-border-radius:5px;
+}
+
+input:focus, textarea:focus {
+    border:3px solid #357AE8;
+}
+
+
+/* Syle button. Settings of line-height, font-size, text-indent used to hide submit value in IE */
+#submit {
+    padding-top: 10px;
+    margin-top: 24px;
+    float: right;
+    cursor:pointer;
+    width:auto;
+    height: 47px;
+    line-height:0;
+    font-size:0.9em;
+/*    text-indent:-999px;*/
+    color: white;
+    background: #2AB5E0;
+    border: 3px solid #353535;
+    -moz-border-radius: 2px;
+    -webkit-border-radius: 2px;
+}
+/* Style the search button hover state */
+#submit:hover {
+    background:  #218DAF;
+    border: 3px solid #353535;
+
+}
+
+h2.section{
+    font-family: klavikaBold;
+    font-size: 2em;
+    font-weight: bold;
+    color: white;
+    background: #353535;
+    text-align: center;
+    margin: 0 auto;
+    padding: .3em;
+}
+
+h3.subsection{
+    font-family: klavikaLight;
+    font-size: 1.4em;
+
+    color: white;
+    background: #353535;
+    text-align: center;
+
+    padding: .2em;
+}
+
+#lista{
+    position: relative;
+}
+
+
+a.button{
+
+    margin-bottom: 2%;
+    float: none;
+    background: #A0A0A0;
+    width: auto;
+
+}
+
+.hide{
+    visibility: hidden;
+}
+
+.mostrar{
+    background: #28B573 !important;
+}
+.mostrar:hover{
+    background: #2b8c5d !important;
+}
+
+.ocultar{
+    background: #D62D3E !important;
+}
+.ocultar:hover{
+    background: #ad2b36 !important;
+}
+
+#Turnos{
+    width: 100%;
+}
+
+#botones{
+    top:7%;
+    height: 80px;
+    width: auto;
+    margin: 0px auto 0px auto;
+    text-align: center;
+
+}
+
+.log_out{
+    background: #353535;
+}
+
+#tabs{
+    width: 100%;
+    left: 0;
+    height: 50px;
+    position: absolute;
+    overflow: hidden;
+    background-color: #2AB5E0;
+}
+
+ul#menu{
+    position: relative;
+    list-style:none;
+    bottom:0px;
+    font-size:1.2em;
+    font-family: "KlavikaLight";
+    font-weight: bold;
+    color:white;
+    letter-spacing:-1px;
+}
+ul#menu li{
+    float:left;
+    margin:0px 2px 0px 0px;
+}
+ul#menu li a{
+    cursor:pointer;
+    position:relative;
+    padding: 22px 8px 9px 8px;
+    line-height:20px;
+    /*width:150px;*/
+    text-decoration: none;
+    color: white;
+    background: #353535;
+    border: 1px white;
+}
+
+
+
+/********* navigation bar *********/
+
+body {
+margin:0 auto;
+}
+
+/*--navigation wrapper--*/
+#navwrapper {
+position:absolute;
+width: 100%;
+left: 0;
+margin:0 auto;
+background-color: #2D2D2D;
+}
+
+#nav {
+font-family: "KlavikaLight";
+font-size:18px;
+padding-top:4px;
+}
+
+#nav, #nav ul {
+padding: 0;
+margin: 0 0 0 10px;
+list-style: none;
+font-family: "KlavikaLight"
+}
+
+/*--main nav links style--*/
+#nav a {
+display:block;
+padding:7px 7px 7px 7px;
+color:#ccc;
+text-decoration:none;
+cursor:pointer;
+}
+
+#nav a.dmenu {
+
+}
+
+#nav a.dmenu:hover {
+color:#3366CC !important;
+background-color: #fff !important;
+}
+
+#nav li {
+float: left;
+}
+
+#nav li {position: relative;}
+
+/* hide from IE, mac */
+#nav li {position: static; width: auto;}
+/* end hiding from IE5 mac */
+
+/*--drop down menu styling--*/
+#nav li ul {
+position: absolute;
+display: none;
+margin-left:-1px;
+padding-bottom:10px;
+background-color: #FFFFFF;
+border: 1px solid #bbb;
+border-top:none;
+-moz-box-shadow: 0 0 5px #ddd;
+-webkit-box-shadow: 0 0 5px #ddd;
+box-shadow: 0 0 5px #ddd;
+/*--make it top of all the elements on page, so that it can be visible--*/
+z-index:5000;
+}
+
+#nav li:hover a, #nav a:focus,
+#nav a:active {
+padding:7px 7px 7px 7px;
+color:#fff;
+background:#444;
+text-decoration:none;
+}
+
+#nav li ul, #nav ul li  {
+width: 10em;
+}
+
+/*--drop down menu styling is different from main nav, strict rule--*/
+#nav ul li a  {
+color: #3366CC !important;
+border-right: 0;
+}
+#nav ul li a:hover  {
+color:#3366CC !important;
+background-color: #eef3fb !important;
+border-right: 0;
+}
+
+/*--the selected, current item in the navigation menu--*/
+#nav a.current{
+color:#fff;
+font-weight:bold;
+background:#2D2D2D;
+text-decoration:none;
+border-top:2px solid #C33;
+padding-bottom:5px; /*--removing 2px border from 7px padding--*/
+}
+
+#nav a.current:hover{
+padding-bottom:5px; /*--removing 2px border from 7px padding--*/
+}
+
+#nav li:hover ul {
+display: block;
+}
+
+#nav li:hover ul a{
+color: #000000;
+background-color: transparent;
+}
+
+#nav ul a:hover {
+background-color: #606060!important;
+color: #FFFFFF !important;
+}
+
+/*--used in drop down menu items--*/
+.menuseprator{border-bottom:1px solid #ddd; margin:10px 0 10px 0;}
+
+/*--for showing down arrow in drop down menu item--*/
+.arrowdown{color#eee; font-size:0.5em;}
+
+/*--for the left navigation menu--*/
+.floatleft{float:left;}
+
+/*--for the right options navigation menu--*/
+.floatright{float:right;}
+
+/*--clear all floating, left and right--*/
+.clear{clear:both;}
+
+
+
+
+/* end navigation bar*/
+
+
+
+ul#result{
+    margin-top: 3%;
+}
+
+
+#acuerdos{
+    clear: both;
+}
+
+.lista_info{
+    margin-top: 1.7%;
+    margin-left: 15px;
+    margin-right: 20px;
+    display: block;
+
+}
+
+.lista_info li{
+    width: 100%;
+}
+
+.arrow{
+    font-weight: bold !important;
+    font-family: KlavikaBold !important;
+    text-align: justify;
+
+}
+
+
+
+.content_list{
+    font-family: klavikaLight !important;
+    text-align: justify;
+    margin: 0em 0em 0.5em 2.5em !important;
+
+    position: relative;
+    display: block;
+    padding: 2% .4em 2% .8em;
+    *padding: .4em;
+
+    /*background: #ddd;*/
+    text-decoration: none;
+    font-size: 1.5em;
+    color: #666;
+}
+
+.encabezado{
+    text-decoration: none;
+    font-family: klavikaBold;
+    font-size: 1.5em;
+    font-weight: bold;
+    color: #666;
+    position: relative;
+    display: block;
+    padding: 0em .4em 0em .8em;
+    margin: .5em 0 0em 2.5em;
+
+}
+
+
+ul#menu a:hover span.description{
+    background-color:#353535;
+}
+ul#menu a:hover span.title{
+    color:#white;
+}
+
+ul#menu a.select{
+background:black;
+}
+
+
+#contenido{
+    width: 90%;
+    top: 80px;
+    min-height: 800px;
+    margin: 15px auto 0px auto;
+    position: relative;
+    overflow: hidden;
+    border: 3px solid #eeeeee;
+    background-color: #eeeeee;
+    -moz-box-shadow: 1px 1px 6px #000;
+    -webkit-box-shadow: 1px 1px 6px #000;
+    -moz-border-radius: 20px 20px 0px 0px;
+    -webkit-border-top-left-radius: 20px;
+    -webkit-border-top-right-radius: 20px;
+    border-radius: 20px 20px 0px 0px;
+}
+.delete {
+    color: #E75957 !important;
+    font-size: 2em !important;
+    padding: 0em .4em 0em .4em !important;
+    top:-1.4em !important;
+    cursor:pointer;
+}
+
+.lista_info .delete {
+    float:right !important;
+    color: #E75957 !important;
+    font-size: 2em !important;
+    padding: 0em .4em 0em .4em !important;
+    margin-top: 2% !important;
+    margin-right: 0 !important;
+    cursor:pointer;
+}
+
+.edit {
+    color: #353535 !important;
+    font-size: 2em !important;
+    padding: 0em .4em 0em .4em !important;
+    top:-1.4em !important;
+    cursor:pointer;
+}
+
+.lista_info .edit {
+    float:right !important;
+    color: #353535 !important;
+    font-size: 2em !important;
+    padding: 0em .4em 0em .4em !important;
+    margin-top: 2% !important;
+    margin-right: 0% !important;
+    cursor:pointer;
+}
+
+.lista_info li{
+    border-bottom: 2px dotted #353535;
+}
+
+.li_textarea {
+
+    border: 1px solid gray !important;
+
+    overflow: auto !important;
+    padding: 2px !important;
+    resize: vertical !important;
+    background: rgb(239, 239, 239) !important;
+    border: 3px solid rgb(222, 222, 222)!important;
+
+    padding: 10px !important;
+    margin-top: 3px;
+    margin-bottom: 17px;
+
+    border-top-left-radius: 5px !important;
+    border-top-right-radius: 5px !important;
+    border-bottom-right-radius: 5px !important;
+    border-bottom-left-radius: 5px !important;
+
+}
+
+#nuevo_temaAbierto{
+    display: none;
+}
+
+#nuevo_acuerdo{
+    display:none;
+}
+
+#nueva_restriccion{
+    display:none;
+}
+
+.li_textarea:focus{
+    border:3px solid #357AE8!important;
+}
+
+.li_textarea::-moz-focus-inner { border: 0; padding: 0; }
+
+.selectboxit-text {
+
+    /* Encloses the down arrow in a box */
+    color: #A9A9Ac !important;
+
+  }
+
+.selectboxit-container{
+    height: 47px !important;
+  }
+
+.selectboxit{
+    border: 3px solid rgb(222, 222, 222);
+    height: 27px !important;
+    padding: 10px !important;
+    margin-top: 3px !important;
+    margin-bottom: 10px !important;
+    font-size: 0.9em !important;
+
+    background-image: linear-gradient(to bottom, #eeeeee, #eeeeee);
+  }
+
+
+.selectboxit-container .selectboxit-options{
+    width: 409px;
+
+    padding: 10px !important;
+    margin-top: 3px !important;
+    margin-bottom: 27px !important;
+    max-height: 150px;
+    border: 3px solid rgb(222, 222, 222);
+  }
+
+/*.selectboxit-selected {
+    background: #2AB5E0;
+  }*/
+
+.selectboxit-btn {
+    background-color: #eeeeee;
+  }
+
+.selectboxit-btn:hover,
+.selectboxit-btn:focus,
+.selectboxit-btn:active  {
+    background-color: #eeeeee;
+  }
+
+.selectboxit .selectboxit-arrow-container .selectboxit-arrow {
+  top: 10%;
+  left: 0;
+  width: 1.5em !important;
+  text-align: center;
+  display: inline-block;
+  font-size: 1.5em !important;
+}
+
+
+.selectboxit-arrow-container {
+
+    /* Encloses the down arrow in a box */
+    border-left: 1px solid #ccc;
+
+}
+
+.selectboxit-list > .selectboxit-focus > a, .selectboxit-list > .selectboxit-focus > a:hover, .selectboxit-list > .selectboxit-focus > a:focus{
+    background-image: linear-gradient(to bottom, #353535, #353535);
+
+}
+
+.selectboxit-option{
+    border-bottom:none !important;
+}
+
+.checkbox{
+    display: inline-block;
+    height: 50px;
+    width: 450px;
+    margin:3px 0;
+
+}
+.checkbox input{
+    width: 50px;
+}
+
+.checkbox input[type=checkbox] {
+display: none;
+}
+
+.checkbox label{
+    display: inline-block;
+    cursor: pointer;
+    position: relative;
+    margin-right: 15px;
+    padding-right: 55px;
+}
+
+.checkbox label:after {
+    content: "";
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    margin-left: 10px;
+    position: absolute;
+    right: 0;
+    bottom: 4px;
+    background-color: #aaa;
+    box-shadow: inset 0px 2px 3px 0px rgba(0, 0, 0, .3), 0px 1px 0px 0px rgba(255, 255, 255, .8);
+}
+
+.checkbox label {
+    margin-bottom: 10px;
+}
+
+.checkbox label:before {
+    border-radius: 3px;
+}
+
+.checkbox input[type=checkbox]:checked+label:after {
+    content: "\2713";
+    text-shadow: 1px 1px 1px rgba(0, 0, 0, .2);
+    font-size: 26px;
+    color: white;
+    text-align: center;
+    line-height: 26px;
+}
+
+.corte {
+clear: both;
+padding-top: 7em;
+}
+
+
+
+
+

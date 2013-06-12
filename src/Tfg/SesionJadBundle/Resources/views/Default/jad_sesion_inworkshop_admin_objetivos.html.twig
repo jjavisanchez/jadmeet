@@ -1,11 +1,26 @@
 <div id="Objetivos">
 	        <h2 class="section">Objetivos</h2>
 	        <div id="botones">
-				<a class="mostrar button" href="">Mostrar en A</a>
-				<a class="mostrar button" href="">Mostrar en B</a>
-			</div>
-	        <ul id="result">
+				{% set contentA = screens.A %}
+			    {% set contentB = screens.B %}
 
-	        </ul>
+			    {% if contentA == 'objetivos' %}
+			        <a class="ocultar button" onclick="ocultar(this,'A','objetivos')">Ocultar en A</a>
+			    {% else %}
+					 <a class="mostrar button" onclick="mostrar(this,'A','objetivos')">Mostrar en A</a>
+				{% endif %}
+
+				{% if contentB == 'objetivos' %}
+	                <a class="ocultar button" onclick="ocultar(this,'B','objetivos')">Ocultar en B</a>
+	            {% else %}
+	                <a class="mostrar button" onclick="mostrar(this,'B','objetivos')">Mostrar en B</a>
+        		{% endif %}
+			</div>
+
+				<h3 class="subsection">Objetivos o Descripción del JAD</h3>
+					<p>{{ jad.objetivosDireccion }}</p>
+					<p>{{ jad.propositos }}</p>
+			    <h3 class="subsection">Objetvios o Descripción del Workshop</h3>
+			    	<p>{{ sesion.descripcion }}</p>
 </div>
 <div style="clear:both;"></div>

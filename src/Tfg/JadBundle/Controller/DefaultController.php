@@ -9,6 +9,13 @@ use Symfony\Component\Security\Core\SecurityContext;
 use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
 use Symfony\Component\HttpFoundation\Response;
 
+use Tfg\JadBundle\Entity\Supuesto;
+use Tfg\JadBundle\Entity\TemaAbierto;
+use Tfg\JadBundle\Entity\Restriccion;
+use Tfg\SesionJadBundle\Form\Type\SupuestoType;
+use Tfg\JadBundle\Form\GestionClaves\TemaAbiertoType;
+use Tfg\SesionJadBundle\Form\Type\RestriccionType;
+
 use Tfg\UsuarioBundle\Entity\Rol;
 use Tfg\JadBundle\Entity\Jad;
 use Tfg\JadBundle\Entity\JadUsuarioRol;
@@ -27,8 +34,8 @@ class DefaultController extends Controller
 
     		$jad = $this->getRequest()->getSession()->get('jad');
     		$rols = $this->getRequest()->getSession()->get('rol');
-                $rol = new Rol();
-                $rol->unserialize($rols);
+        $rol = new Rol();
+        $rol->unserialize($rols);
         $proposito = $jad->getPropositos();
         $alcance = $jad->getAlcance();
         $objetivosDireccion = $jad->getObjetivosDireccion();
@@ -113,6 +120,209 @@ class DefaultController extends Controller
                                                                                   'sesionUsuariosConfirmados'=>$sesionUsuariosConfirmados
                                                                                   ));
     }
+
+    public function participantesAction(){
+        $usuario = $this->get('security.context')->getToken()->getUser();
+        $em = $this->get('doctrine')->getEntityManager();
+
+        $jad = $this->getRequest()->getSession()->get('jad');
+        $rols = $this->getRequest()->getSession()->get('rol');
+        $rol = new Rol();
+        $rol->unserialize($rols);
+
+        $usuariosSistema = $em->getRepository('UsuarioBundle:Usuario')->findAll();
+
+        return $this->render('JadBundle:Default:jad_participantes.html.twig',array('rol'=>$rol,
+                                                                          'usuarios'=>$usuariosSistema,
+                                                                          'jad'=>$jad
+                                                                          ));
+    }
+
+    public function calendarioAction(){
+        $usuario = $this->get('security.context')->getToken()->getUser();
+        $em = $this->get('doctrine')->getEntityManager();
+
+        $jad = $this->getRequest()->getSession()->get('jad');
+        $rols = $this->getRequest()->getSession()->get('rol');
+        $rol = new Rol();
+        $rol->unserialize($rols);
+
+
+        return $this->render('JadBundle:Default:jad_calendario.html.twig',array('rol'=>$rol,
+                                                                          'jad'=>$jad
+                                                                          ));
+    }
+
+    public function clavesAction(){
+        $usuario = $this->get('security.context')->getToken()->getUser();
+        $em = $this->get('doctrine')->getEntityManager();
+
+        $jad = $this->getRequest()->getSession()->get('jad');
+        $rols = $this->getRequest()->getSession()->get('rol');
+        $rol = new Rol();
+        $rol->unserialize($rols);
+
+
+        $supuesto = new Supuesto();
+        $form = $this->createForm(new SupuestoType(), $supuesto);
+
+         $acuerdos = $em->getRepository('JadBundle:Supuesto')->findByJad($jad);
+
+        return $this->render('JadBundle:Default:jad_claves.html.twig',array('rol'=>$rol,
+                                                                          'jad'=>$jad,
+                                                                          'acuerdos'=>$acuerdos,
+                                                                          'form'=>$form->createView()
+                                                                          ));
+    }
+
+    public function objetivosAction(){
+        $jad = $this->getRequest()->getSession()->get('jad');
+        $rols = $this->getRequest()->getSession()->get('rol');
+
+        //La varialble rol dentro de la sesión esta serializada cuadno se guardo en el default controller dentro
+        //de UsuarioBundle al guardar las variables del usuario en sesión con el método actualizarSesionVar()
+        //por ello es necesario deserializar cada vez que se recupera
+        $rol = unserialize($rols);
+
+        $em = $this->getDoctrine()->getEntityManager();
+
+
+        return $this->render('JadBundle:Default:jad_objetivos.html.twig', array('rol'=>$rol,
+                                                                                'jad'=>$jad));
+    }
+
+    public function acuerdosAction(){
+
+      $usuario = $this->get('security.context')->getToken()->getUser();
+        $em = $this->get('doctrine')->getEntityManager();
+
+        $jad = $this->getRequest()->getSession()->get('jad');
+        $rols = $this->getRequest()->getSession()->get('rol');
+        $rol = new Rol();
+        $rol->unserialize($rols);
+
+
+        $supuesto = new Supuesto();
+        $form = $this->createForm(new SupuestoType(), $supuesto);
+
+         $acuerdos = $em->getRepository('JadBundle:Supuesto')->findByJad($jad);
+
+        return $this->render('JadBundle:Default:jad_acuerdos.html.twig',array('rol'=>$rol,
+                                                                          'jad'=>$jad,
+                                                                          'acuerdos'=>$acuerdos,
+                                                                          'form'=>$form->createView()
+                                                                          ));
+    }
+
+    public function restriccionesAction(){
+
+        $peticion = $this->getRequest();
+        $jad = $this->getRequest()->getSession()->get('jad');
+        $rols = $this->getRequest()->getSession()->get('rol');
+
+        //La varialble rol dentro de la sesión esta serializada cuadno se guardo en el default controller dentro
+        //de UsuarioBundle al guardar las variables del usuario en sesión con el método actualizarSesionVar()
+        //por ello es necesario deserializar cada vez que se recupera
+        $rol = unserialize($rols);
+
+        $em = $this->getDoctrine()->getEntityManager();
+        $real_jad = $em->getRepository('JadBundle:Jad')->findOneBySlug($jad->getSlug());
+
+        $restricciones = $em->getRepository('JadBundle:Restriccion')->findByJad($jad);
+
+        $restriccion = new Restriccion();
+        $form = $this->createForm(new RestriccionType('nuevo'), $restriccion);
+
+         if ($peticion->getMethod() == 'POST') {
+            $form->bindRequest($peticion);
+
+                if ($form->isValid()) {
+                    $restriccion->setJad($real_jad);
+                    $em = $this->getDoctrine()->getEntityManager();
+                    $em->persist($restriccion);
+                    $em->flush();
+                }
+
+                $restricciones = $em->getRepository('JadBundle:Restriccion')->findByJad($jad);
+                return $this->render('JadBundle:Default:jad_restricciones.html.twig', array('sesion'=>$sesion,
+                                                                                                           'rol'=>$rol,
+                                                                                                           'jad'=>$jad,
+                                                                                                           'restricciones'=>$restricciones,
+                                                                                                           'form'=>$form->createView()));
+        }
+
+        return $this->render('JadBundle:Default:jad_restricciones.html.twig', array('rol'=>$rol,
+                                                                                    'jad'=>$jad,
+                                                                                    'form'=>$form->createView(),
+                                                                                    'restricciones'=>$restricciones));
+    }
+
+
+
+    public function temasAbiertosAction(){
+
+        $peticion = $this->getRequest();
+        $jad = $this->getRequest()->getSession()->get('jad');
+        $rols = $this->getRequest()->getSession()->get('rol');
+
+        //La varialble rol dentro de la sesión esta serializada cuadno se guardo en el default controller dentro
+        //de UsuarioBundle al guardar las variables del usuario en sesión con el método actualizarSesionVar()
+        //por ello es necesario deserializar cada vez que se recupera
+        $rol = unserialize($rols);
+
+        $em = $this->getDoctrine()->getEntityManager();
+        $real_jad = $em->getRepository('JadBundle:Jad')->findOneBySlug($jad->getSlug());
+        $temas_abiertos = $em->getRepository('JadBundle:TemaAbierto')->findByJad($jad);
+
+        $tema_abierto = new TemaAbierto();
+
+        $form = $this->createForm(new TemaAbiertoType('nuevo'), $tema_abierto, array('jad'=>$jad));
+
+
+
+
+         if ($peticion->getMethod() == 'POST') {
+            $form->bindRequest($peticion);
+
+                if ($form->isValid()) {
+                    $tema_abierto->setJad($real_jad);
+                    $bundlePath = $this->get('kernel')->locateResource('@SesionJadBundle');
+                    $filename = $this->container->getParameter('file_currentpoint');
+                    $fullpath = "$bundlePath/$filename";
+                    $id_punto_actual = "";
+                    if(file_exists($fullpath)){
+                        $handlerPunto = $this->get('handlerJSONPuntos');
+                        $handlerPunto->setPath($bundlePath);
+                        $handlerPunto->setFilename($filename);
+                        $handlerPunto->setEntityName('array<string,string>');
+                        $handlerPunto->setDispatcher($this->get('event_dispatcher'));
+                        $punto_actual = $handlerPunto->readFile();
+                        $id_punto_actual = $punto_actual['punto'];
+                    }
+                    $punto_actual = $em->getRepository('SesionJadBundle:PuntoAgenda')->find($id_punto_actual);
+                    $temas_abiertos = $em->getRepository('JadBundle:TemaAbierto')->findByJad($sesion);
+                    $tema_abierto->setPuntoAgenda($punto_actual);
+                    $em->persist($tema_abierto);
+                    $em->flush();
+                    //lanzamos el evento new agreement.
+                }
+
+                $temas_abiertos = $em->getRepository('JadBundle:TemaAbierto')->findByJad($sesion);
+                return $this->render('JadBundle:Default:jad_temas_abiertos.html.twig', array('rol'=>$rol,
+                                                                                                           'jad'=>$jad,
+                                                                                                           'temas_abiertos'=>$temas_abiertos,
+                                                                                                           'form'=>$form->createView()));
+        }
+
+
+        return $this->render('JadBundle:Default:jad_temas_abiertos.html.twig', array(
+                                                                                                           'rol'=>$rol,
+                                                                                                           'jad'=>$jad,
+                                                                                                           'temas_abiertos'=>$temas_abiertos,
+                                                                                                           'form'=>$form->createView()));
+    }
+
+
 
     //Funcion auxiliar para obtener colores aleatorios definidos en el css al abrir la pantalla que muestra las sesiones de un jad
     public function getColorAction($colors)

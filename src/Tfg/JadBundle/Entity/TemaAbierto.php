@@ -10,13 +10,11 @@ use Doctrine\ORM\Mapping as ORM;
 class TemaAbierto extends Clave {
 
 	/**
-	 * @ORM\ManyToMany(targetEntity="Tfg\UsuarioBundle\Entity\Usuario")
-	 * @ORM\JoinTable(name="usuarios_TemaAbierto",
-	 *      joinColumns={@ORM\JoinColumn(name="temaAberto_id", referencedColumnName="id")},
-	 *      inverseJoinColumns={@ORM\JoinColumn(name="usuario_id", referencedColumnName="id")}
-	 *      )
+	 * @ORM\ManyToOne(targetEntity="Tfg\UsuarioBundle\Entity\Usuario")
+	 * @ORM\JoinColumn(name="usuario_id", referencedColumnName="id", nullable=true)
+	 *
 	 */
-	private $usuarios;
+	private $usuario;
 
 	/**
 	 * @ORM\ManyToOne(targetEntity="Tfg\SesionJadBundle\Entity\PuntoAgenda")
@@ -27,14 +25,14 @@ class TemaAbierto extends Clave {
 	/**
 	 * @var string $solucion
 	 *
-	 * @ORM\Column(name="solucion", type="text")
+	 * @ORM\Column(name="solucion", type="text",  nullable=true)
 	 */
 	private $solucion;
 
 	/**
 	 * @var \DateTime $fechaLimite
 	 *
-	 * @ORM\Column(name="fechaLimite", type="datetime")
+	 * @ORM\Column(name="fechaLimite", type="datetime", nullable=true)
 	 */
 	private $fechaLimite;
 
@@ -46,31 +44,31 @@ class TemaAbierto extends Clave {
 	private $finalizado;
 
 	public function __construct() {
-		$this->usuarios = new \Doctrine\Common\Collections\ArrayCollection();
+
 	}
 
 
 	/**
-	 * Set usuarios
+	 * Set usuario
 	 *
-	 * @param \Doctrine\Common\Collections\ArrayCollection $usuarios
+	 * @param Tfg\UsuarioBundle\Entity\Usuario $usuario
 	 * @return TemaAbierto
 	 */
-	public function setUsuarios($usuarios=null)
+	public function setUsuario($usuario=null)
 	{
-		$this->usuarios = $usuarios;
+		$this->usuario = $usuario;
 
 		return $this;
 	}
 
 	/**
-	 * Get usuarios
+	 * Get usuario
 	 *
-	 * @return \Doctrine\Common\Collections\ArrayCollection
+	 * @return Tfg\UsuarioBundle\Entity\Usuario
 	 */
-	public function getUsuarios()
+	public function getUsuario()
 	{
-		return $this->usuarios;
+		return $this->usuario;
 	}
 
 	/**
@@ -164,7 +162,7 @@ class TemaAbierto extends Clave {
 	{
 		return $this->finalizado;
 	}
-	
+
 	public function __toString(){
 		return $this->getNombre();
 	}

@@ -82,6 +82,54 @@ class ApiRestController extends Controller{
 
     }
 
+
+
+    /**
+     * @Route("sesionjad/deny/turn", name="turn")
+     * es utilizado por el móvil a través de la API REST
+     */
+    public function denyTurnAction()
+    {
+         //Obtener datos de usuario
+        $request = $this->getRequest();
+        $username = $request->request->get('usuario');
+        $em = $this->get('doctrine.orm.entity_manager');
+        $user = $em->getRepository('UsuarioBundle:Usuario')->findOneByEmail($username);
+
+        $handlerTurnos = $this->get('handlerJSONTurnos');
+        $path = $this->get('kernel')->locateResource('@SesionJadBundle');
+        $handlerTurnos->setPath($path);
+        $handlerTurnos->setDispatcher($this->get('event_dispatcher'));
+        $handlerTurnos->setFilename($this->container->getParameter('file_turns'));
+        $handlerTurnos->setEntityName("Tfg\SesionJadBundle\Classes\Turns");
+
+        $listener = $this->get('socketEventListener');
+        $dispatcher = $this->get('event_dispatcher');
+        $dispatcher->addListener(SocketEvents::REMOVE_TURN, array($listener, 'onRemoveTurn'));
+
+        $turnList = null;
+        try{
+        $turnsList = $handlerTurnos->removeDatesFile($user->getId());
+        }catch(\Exception $e){
+            $response = new Response($e->getMessage());
+            $response->setStatusCode(501);
+            $response->headers->set('Content-type', 'text/plain');
+            return $response;
+        }
+
+        $serializer = $this->container->get('serializer');
+        $turnListJSON = $serializer->serialize($turnsList, 'json');
+        $response = new Response($turnListJSON);
+        $response->setStatusCode(201);
+        $response->headers->set('Content-type', 'application/json');
+        $currentUrl = $this->getRequest()->getUri();
+        $locationResource= "$currentUrl/turnlist";
+        $response->headers->set('Location',$locationResource);
+
+
+        return $response;
+
+}
 }
 
 ?>

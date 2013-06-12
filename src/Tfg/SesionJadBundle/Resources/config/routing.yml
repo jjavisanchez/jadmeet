@@ -76,3 +76,27 @@ admin_window_tema_abierto_editar:
        defaults: { _controller: SesionJadBundle:Default:inWorkshopAdminEditarTemaAbierto }
        options:
         expose: true
+admin_window_tema_abierto_eliminar:
+       pattern:  /{rolusuario}/jad/{nombreJad}/workshop/{nombreSesion}/inworkshop/admin/eliminartemaabierto/{id}
+       defaults: { _controller: SesionJadBundle:Default:inWorkshopAdminEliminarTemaAbierto }
+       options:
+        expose: true
+admin_window_restriccion_editar:
+       pattern:  /{rolusuario}/jad/{nombreJad}/workshop/{nombreSesion}/inworkshop/admin/editarrestriccion/{id}
+       defaults: { _controller: SesionJadBundle:Default:inWorkshopAdminEditarRestriccion }
+       options:
+        expose: true
+admin_window_restriccion_eliminar:
+       pattern:  /{rolusuario}/jad/{nombreJad}/workshop/{nombreSesion}/inworkshop/admin/eliminarrestriccion/{id}
+       defaults: { _controller: SesionJadBundle:Default:inWorkshopAdminEliminarRestriccion }
+       options:
+        expose: true
+jad_sesion_documentos:
+       pattern: /{rolusuario}/jad/{nombreJad}/workshop/{nombreSesion}/documentos
+       defaults: { _controller: SesionJadBundle:Default:documentos }
+jad_sesion_participantes:
+       pattern: /{rolusuario}/jad/{nombreJad}/workshop/{nombreSesion}/participantes
+       defaults: { _controller: SesionJadBundle:Default:participantes }
+jad_sesion_agenda:
+       pattern: /{rolusuario}/jad/{nombreJad}/workshop/{nombreSesion}/agenda
+       defaults: { _controller: SesionJadBundle:Default:agenda }

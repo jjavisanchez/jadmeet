@@ -1,0 +1,111 @@
+{% extends '::base.html.twig' %}
+
+{% block stylesheets %}
+{{parent()}}
+
+<link rel="stylesheet" href="{{asset('css/fonts/font-awesome/css/font-awesome.css')}}">
+<link rel="stylesheet" href="{{asset('bundles/sesionjad/css/sesion_documentos.css')}}">
+<link rel="stylesheet" href="{{asset('bundles/sesionjad/css/sesion_agenda.css')}}">
+{% endblock %}
+
+{% block js %}
+    {{ parent() }}
+    <script>
+          $(function() {
+            $( "ul.droptrue" ).sortable({
+              connectWith: "ul"
+            });
+
+            $( "ul.dropfalse" ).sortable({
+              connectWith: "ul",
+              dropOnEmpty: false
+            });
+
+            $( "#sortable1, #sortable2, #sortable3" ).disableSelection();
+          });
+    </script>
+{% endblock %}
+
+
+{% block menu %}
+<li><a href="{{path('home_usuario')}}"><span class="text">Home</span></a></li>
+<li><a href="{{path('jad_home',{'rolusuario':rol.slug,'nombreJad':jad.slug})}}"><span class="text">JAD Menú</span></a></li>
+<li><a href="{{path('jad_sesiones',{'rolusuario':rol.slug,'nombreJad':jad.slug})}}"><span class="text">Workshops</span></a></li>
+<li><a href="{{ path('jad_sesion', {'rolusuario':rol.slug,'nombreJad':jad.slug,'nombreSesion':sesion.slug}) }}"><span class="text">Workshop Menú</span></a></li>
+<li><a ><span class="text">Agenda</span></a></li>
+{% endblock %}
+
+          {% if is_granted('ROLE_USUARIO') %}
+          {% block log_out_bar %}
+                    {{app.user}}, {{rol.nombre}}
+                    <a href="{{ path('usuario_logout') }}">Cerrar sesión</a>
+           {% endblock %}
+          {% endif %}
+
+{% block main %}
+
+      <section class="container"><h3><span class="left ribbon"></span>Workshop: {{ sesion.nombre }}<span class="right ribbon"></span></h3></section>
+
+      <div id="contenido">
+          <div id="agenda">
+
+            <h2 class="section">Agenda</h2>
+            <div id="botones">
+
+                  <a id="form" class="button" onclick="mostrarFormNuevoPunto()">Nuevo Punto</a>
+
+            </div>
+            <form id="nuevo_punto" action="javascript:insertarPunto()" method="POST" {{ form_enctype(form) }}>
+              <fieldset>
+                {{ form_label(form.nombre, 'Nombre') }}
+                        {{ form_errors(form.nombre) }}
+                        {{ form_widget(form.nombre,{ 'attr':{
+                            'placeholder':'Escribe un nombre para el Punto'}}) }}
+
+                        {{ form_label(form.orden, 'Orden') }}
+                        {{ form_errors(form.orden) }}
+                        {{ form_widget(form.orden,{ 'attr':{
+                            'placeholder':'Escribe el orden asignado al punto'}}) }}
+
+                        {{ form_label(form.duracion, 'Duracion') }}
+                        {{ form_errors(form.duracion) }}
+                        {{ form_widget(form.duracion,{ 'attr':{
+                            'placeholder':'Escribe la duración apróximada del punto en minutos'}}) }}
+              </fieldset>
+                {{ form_rest(form) }}
+                <input id="submit" type="submit" value="Crear Punto" />
+            </form>
+            <h3 class="subsection">Lista de Puntos Existentes</h3>
+                <ol id="lista_de_puntos" class="lista_info">
+                  {% for punto in puntos %}
+                            <li>
+                                <a id="encabezado_punto_{{ loop.index }}" class="encabezado arrow">{{ punto.nombre }}</a>
+                                <a onclick="eliminarPunto('{{ punto.id }}')" class='delete'><i class='icon-remove' onmouseover="this.className='icon-remove-sign'" onmouseout="this.className='icon-remove'"></i></a>
+                                <a id="editar_punto_{{ loop.index }}" class='edit' onclick="editarPuntos('{{ loop.index }}', '{{ punto.id }}')"><i id="figure_{{ loop.index }}" class="icon-pencil" onmouseover="this.className='icon-edit'" onmouseout="this.className='icon-pencil'"></i></a>
+                                <!--<a id="orden_punto_{{ loop.index }}" class="content_list">Orden en la agenda: {{ punto.orden }}</a>-->
+                                <a id="duracion_punto_{{ loop.index }}" class="content_list">Duración en minutos: {{ punto.duracion }}</a>
+                            </li>
+
+                      {% endfor %}
+                </ol>
+        </div>
+        <div style="clear:both;"></div>
+      </div>
+
+
+{% endblock %}
+
+{% block javascripts %}
+  <script type="text/javascript">
+      function mostrarFormNuevoPunto(){
+          if( $('#nuevoPunto').css('display') == 'block' ){
+             $('#nuevoPunto').css('display','none');
+             $('#form').html('Nuevo Punto');
+          }else
+          if( $('#nuevoPunto').css('display') == 'none' ){
+             $('#nuevoPunto').css('display','block');
+              $('#form').html('Cancelar');
+          }
+        }
+  </script>
+{% endblock %}

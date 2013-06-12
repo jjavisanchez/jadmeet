@@ -1,12 +1,25 @@
 <div id="TemasAbiertos">
 	        <h2 class="section">Temas Abiertos</h2>
 	        <div id="botones">
-				<a id="mostrarA" class="mostrar button" href="">Mostrar en A</a>
-				<a id="mostrarB" class="mostrar button" href="">Mostrar en B</a>
+	        	{% set contentA = screens.A %}
+			    {% set contentB = screens.B %}
+
+			    {% if contentA == 'temasAbiertos' %}
+			        <a class="ocultar button" onclick="ocultar(this,'A','temasAbiertos')">Ocultar en A</a>
+			    {% else %}
+					 <a class="mostrar button" onclick="mostrar(this,'A','temasAbiertos')">Mostrar en A</a>
+				{% endif %}
+
+				{% if contentB == 'temasAbiertos' %}
+	                <a class="ocultar button" onclick="ocultar(this,'B','temasAbiertos')">Ocultar en B</a>
+	            {% else %}
+	                <a class="mostrar button" onclick="mostrar(this,'B','temasAbiertos')">Mostrar en B</a>
+        		{% endif %}
+
 				<a id="form" class="button" onclick="mostrarFormNuevoTema()">Nuevo Tema Abierto</a>
 			</div>
 
-			<form id="nuevo_temaAbierto" action="{{path('admin_window_temasAbiertos',{'rolusuario':rol.slug,'nombreJad':jad.slug,'nombreSesion':sesion.slug})}}"" method="POST" {{ form_enctype(form) }}">
+			<form id="nuevo_temaAbierto" action="javascript:insertarTemaAbierto()" method="POST" {{ form_enctype(form) }}>
             <fieldset>
                 {{ form_label(form.nombre, 'Nombre') }}
                 {{ form_errors(form.nombre) }}
@@ -37,9 +50,9 @@
 
 	            </div>
 
-                {{ form_label(form.usuarios, 'Elige un responsable para el Tema Abierto') }}
-                {{ form_errors(form.usuarios) }}
-                {{ form_widget(form.usuarios) }}
+                {{ form_label(form.usuario, 'Elige un responsable para el Tema Abierto') }}
+                {{ form_errors(form.usuario) }}
+                {{ form_widget(form.usuario) }}
 
             </fieldset>
 
@@ -63,7 +76,7 @@
 	                          	 <a id="solucion_tema_abierto_{{ loop.index }}" class="content_list">{{ tema_abierto.solucion }}</a>
 	                          {% endif %}
 	                          <a id="encabezado_responsable_tema_abierto_{{ loop.index }}" class="encabezado">Responsable</a>
-	                          <a id="responsable_tema_abierto_{{ loop.index }}" class="content_list">{{ tema_abierto.usuarios[0] }}</a>
+	                          <a id="responsable_tema_abierto_{{ loop.index }}" class="content_list">{{ tema_abierto.usuario }}</a>
 	                          <a id="encabezado_fecha_tema_abierto_{{ loop.index }}" class="encabezado">Fecha Límite</a>
 	                          <a id="fecha_tema_abierto_{{ loop.index }}" class="content_list">{{ tema_abierto.fechaLimite|date("m/d/Y") }}</a>
 	                          <a id="encabezado_resuelto_tema_abierto_{{ loop.index }}" class="encabezado">¿Resuelto?</a>

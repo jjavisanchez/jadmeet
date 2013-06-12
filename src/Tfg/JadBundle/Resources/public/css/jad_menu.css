@@ -8,13 +8,65 @@ h4{
     right: 0;
 }
 
+#sortable1, #sortable2{ list-style-type: none; padding: 0; float: left; background: #EA4F80; padding: 2.5%; width: 98%; min-height: 300px; max-height: 500px; overflow: scroll;}
+#sortable3 { list-style-type: none;  padding: 0;  background: #42C08B; padding: 2.5%; width: 98%; min-height: 300px; max-height: 500px; overflow: scroll;}
+#sortable1 li, #sortable2 li, #sortable3 li { font-family: 'klavikaLight'; color:white; cursor:move; margin: 1% 0 1% 0; padding: 1%; font-size: 1.2em; }
+#container_participantes{
+
+	display: inline-block;
+	width: 100%;
+
+    margin:0 auto;
+    right: 0;
+    height:auto;
+    background: #eeeeee;
+    border: 1px solid #666666;
+    color:#666666;
+
+    -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
+    border-radius: 3px;
+
+    -moz-box-shadow: 2px 2px 4px #535353;
+    -webkit-box-shadow: 2px 2px 4px #535353;
+    box-shadow: 2px 2px 4px #535353;
+
+}
+#container_lista_participantes{
+
+	width: 90%;
+	margin: 0 auto;
+}
+
+#container_lista_participantes h2{
+	display: inline-block;
+	font-family: 'klavikaLight';
+	color: white;
+	text-align: center;
+	background-color: #353535;
+	width: 103%;
+	margin-bottom: -4%;
+	padding-top: 25px;
+	padding-bottom: 25px;
+}
 
 
+
+.lcontNoInvitados{
+	float:left;
+	width: 45%;
+}
+
+.lcontInvitados{
+	float:right;
+	width: 45%;
+}
 
 .log_out{
 	float:right;
 	right:0px;
 }
+
 
 #main{
 	padding:0px 0;

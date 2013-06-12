@@ -7,7 +7,16 @@ use Symfony\Component\Form\FormBuilderInterface;
 
 
 class RestriccionType extends AbstractType
+
 {
+
+    protected $id;
+
+    public function __construct($id)
+    {
+        $this->id = $id;
+
+    }
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder->add('nombre');
@@ -15,9 +24,16 @@ class RestriccionType extends AbstractType
 
     }
 
+
+
     public function getName()
     {
-        return 'restriccion';
+        $a = $this->id;
+        return "restriccion".$a;
+    }
+
+    public function getId(){
+        return $this->id;
     }
 
     public function getDefaultOptions(array $options)

@@ -9,6 +9,31 @@ jad_sesiones:
 jad_sesion:
        pattern:  /{rolusuario}/jad/{nombreJad}/workshop/{nombreSesion}
        defaults: { _controller: JadBundle:Default:sesion }
+jad_participantes:
+       pattern:  /{rolusuario}/jad/{nombreJad}/participantes
+       defaults: { _controller: JadBundle:Default:participantes }
+jad_calendario:
+       pattern:  /{rolusuario}/jad/{nombreJad}/calendario
+       defaults: { _controller: JadBundle:Default:calendario }
+jad_claves:
+       pattern:  /{rolusuario}/jad/{nombreJad}/claves
+       defaults: { _controller: JadBundle:Default:claves }
+jad_claves_objetivos:
+       pattern: /{rolusuario}/jad/{nombreJad}/claves/objetivos
+       defaults: {_controller: JadBundle:Default:objetivos}
+jad_claves_temasAbiertos:
+       pattern: /{rolusuario}/jad/{nombreJad}/claves/temasabiertos
+       defaults: {_controller: JadBundle:Default:temasAbiertos}
+jad_claves_acuerdos:
+       pattern: /{rolusuario}/jad/{nombreJad}/claves/acuerdos
+       defaults: {_controller: JadBundle:Default:acuerdos}
+jad_claves_restricciones:
+       pattern: /{rolusuario}/jad/{nombreJad}/claves/restricciones
+       defaults: {_controller: JadBundle:Default:restricciones}
+jad_sesion_documentos:
+       pattern: /{rolusuario}/jad/{nombreJad}/workshop/{nombreSesion}/documentos
+       defaults: { _controller: JadBundle:Default:documentos }
+
 
 
 

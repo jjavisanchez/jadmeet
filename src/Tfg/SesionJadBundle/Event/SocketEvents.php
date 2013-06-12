@@ -21,4 +21,10 @@ final class SocketEvents
      const NEW_AGREEMENT = 'new.agreement';
      const REMOVE_AGREEMENT = 'remove.agreement';
      const EDIT_AGREEMENT = 'edit.agreement';
+     const NEW_OPENISSUE = 'new.openissue';
+     const REMOVE_OPENISSUE = 'remove.openissue';
+     const EDIT_OPENISSUE = 'edit.openissue';
+     const NEW_CONSTRAINT = 'new.constraint';
+     const REMOVE_CONSTRAINT = 'remove.constraint';
+     const EDIT_CONSTRAINT = 'edit.constraint';
 }

@@ -27,9 +27,9 @@ class TemaAbiertoType extends AbstractType
     {
         $builder->add('nombre');
         $builder->add('descripcion');
-        $builder->add('usuarios', 'entity', array(
+        $builder->add('usuario', 'entity', array(
             'class' => 'UsuarioBundle:Usuario',
-
+            'required' => false,
             'query_builder' => function(EntityRepository $er) use($options){
                                        return $er->createQueryBuilder('usuario')
                                        ->innerJoin('SesionJadBundle:SesionesJadUsuarios', 'sjur','WITH', 'usuario = sjur.usuario')
@@ -46,7 +46,8 @@ class TemaAbiertoType extends AbstractType
                  'format' => 'dd-MM-yyyy',
                  'attr' => array('class' => 'date'),
                  'required' => false));
-        $builder->add('finalizado');
+        $builder->add('finalizado', 'checkbox' ,array(
+                 'required' => false));
     }
 
     public function getName()

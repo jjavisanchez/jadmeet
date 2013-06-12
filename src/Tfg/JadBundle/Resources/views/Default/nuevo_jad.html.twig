@@ -1,0 +1,78 @@
+{%extends '::base.html.twig'%}
+
+{% block stylesheets %}
+    {{parent()}}
+    <link rel="stylesheet" href="{{asset('bundles/usuario/css/portada.css')}}" type="text/css" media="all" />
+{% endblock %}
+
+{% block logotype %}
+    <a href="{{path('inicio')}}" title="Home Page">
+        <img id="logo" src="{{asset('images/logo.png')}}" alt="Logo de la aplicación" />
+        <h1 id="title">{% block headertitle %} JadMeetUs {% endblock %}</h1>
+    </a>
+{% endblock logotype %}
+
+{% block menu %}
+<!--
+    <li>
+        <a  class="select" href="">
+            <i class="icon_about"></i>
+                <span class="title">Registro</span>
+                <span class="description">
+                    Únete
+                </span>
+        </a>
+    </li>
+-->
+<li><a href="{{path('home_usuario')}}"><span class="text">Home</span></a></li>
+<li><a href=""><span class="text">Nuevo JAD</span></a></li>
+{% endblock %}
+
+{% block main %}
+
+ <header class="body">
+     <h1>Rellena el formulario</h1>
+    </header>
+
+    <section class="body">
+        <form action="{{path('crear_jad')}}" method="post" {{ form_enctype(formulario) }}>
+
+             {{ form_errors(formulario) }}
+
+            <fieldset>
+                {{ form_label(formulario.nombre, 'Nombre') }}
+                {{ form_errors(formulario.nombre) }}
+                {{ form_widget(formulario.nombre,{ 'attr':{
+                    'placeholder':'Dale un nombre al JAD'}}) }}
+
+                {{ form_label(formulario.nombreProyecto, 'Nombre del Proyecto') }}
+                {{ form_errors(formulario.nombreProyecto) }}
+                {{ form_widget(formulario.nombreProyecto,{ 'attr':{
+                    'placeholder':'Escribe el nombre del Proyecto que se tratará en el proceso JAD'}}) }}
+
+                {{ form_label(formulario.propositos, 'Propósitos') }}
+                {{ form_errors(formulario.propositos) }}
+                {{ form_widget(formulario.propositos,{ 'attr':{
+                    'placeholder':'Escribe los fines que se persiguen en el proyecto, si no han sido identificados no te preocupes más adelante prodrás editarlos'}}) }}
+
+                {{ form_label(formulario.alcance, 'Alcance') }}
+                {{ form_errors(formulario.alcance) }}
+                {{ form_widget(formulario.alcance,{ 'attr':{
+                    'placeholder':'Define los límites del proyecto, si no han sido identificados no te preocupes más adelante prodrás editarlos'}}) }}
+
+
+                {{ form_label(formulario.objetivosDireccion, 'Objetivos de la Dirección') }}
+                {{ form_errors(formulario.objetivosDireccion) }}
+                {{ form_widget(formulario.objetivosDireccion,{ 'attr':{
+                    'placeholder':'Escribe los objetivos que persiguen los promotores del proyecto, si no han sido identificados no te preocupes más adelante prodrás editarlos'}}) }}
+
+            </fieldset>
+
+             {{form_rest(formulario)}}
+
+           <input id="submit" class="boton" type="submit" value="Crea el JAD" />
+        </form>
+    </section>
+
+</section>
+{% endblock %}

@@ -1,4 +1,4 @@
-<form id="edit_temaAbierto" action="" method="POST" {{ form_enctype(form) }}>
+<form id="edit_temaAbierto" action="javascript:guardarCambiosTemaAbierto({{ tema_abierto.id }})" method="POST" {{ form_enctype(form) }}>
             <fieldset>
                 {{ form_label(form.nombre, 'Nombre') }}
                 {{ form_errors(form.nombre) }}
@@ -29,9 +29,9 @@
 
 	            </div>
 
-                {{ form_label(form.usuarios, 'Elige un responsable para el Tema Abierto') }}
-                {{ form_errors(form.usuarios) }}
-                {{ form_widget(form.usuarios) }}
+                {{ form_label(form.usuario, 'Elige un responsable para el Tema Abierto') }}
+                {{ form_errors(form.usuario) }}
+                {{ form_widget(form.usuario) }}
 
             </fieldset>
 

@@ -24,6 +24,14 @@ form {
     height: auto;
 }
 
+p{
+    font-family: "KlavikaLight";
+    font-size: 1.5em;
+    color: #666;
+    padding: 0em .4em 0em .8em;
+    margin: .5em 0 0em 2.5em;
+}
+
 label{font-family: "KlavikaBold"; font-size: 1.3em;color: #666666;}
 
 input, textarea {
@@ -395,6 +403,10 @@ ul#menu i.select{
 }
 
 #nuevo_acuerdo{
+    display:none;
+}
+
+#nueva_restriccion{
     display:none;
 }
 

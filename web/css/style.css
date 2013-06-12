@@ -63,7 +63,7 @@ body{  margin: 0; font-size: 1em; line-height: 1.4; height:100%; font:16px/26px 
 ::selection { background: #fe57a1; color: #fff; text-shadow: none; }
 
 a {
-    color: #2AB5E0;
+    /*color: #2AB5E0;*/
     text-decoration: underline;}
 a:link{color: #2AB5E0;}
 a:visited { color: #2AB5E0; }
@@ -330,7 +330,7 @@ border:0px;
     OLD Navigation Bar   ID = MENU
    =================== */
 
-ul#menu{
+/*ul#menu{
     list-style:none;
     position:absolute;
     bottom:0px;
@@ -351,7 +351,7 @@ ul#menu a{
     float:left;
     bottom:-115px;
     line-height:20px;
-    /*width:150px;*/
+    width:150px;
     text-decoration: none;
 }
 
@@ -419,7 +419,7 @@ bottom:-85px;
 }
 ul#menu i.select{
   top:-80px;
-}
+*/
 /* ===================
     END: OLD Navigation Bar
    =================== */

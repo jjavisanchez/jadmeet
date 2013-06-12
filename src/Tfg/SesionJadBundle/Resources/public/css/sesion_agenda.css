@@ -1,0 +1,190 @@
+#botones{
+    top:7%;
+    height: 80px;
+    width: auto;
+    margin: 0px auto 0px auto;
+    text-align: center;
+}
+
+#contenido{
+    width: 90%;
+    min-height: 800px;
+    margin: 15px auto 0px auto;
+    position: relative;
+    overflow: hidden;
+    border: 3px solid #eeeeee;
+    background-color: #eeeeee;
+    -moz-box-shadow: 1px 1px 6px #000;
+    -webkit-box-shadow: 1px 1px 6px #000;
+    -moz-border-radius: 20px 20px 0px 0px;
+    -webkit-border-top-left-radius: 20px;
+    -webkit-border-top-right-radius: 20px;
+    border-radius: 20px 20px 0px 0px;
+}
+
+#agenda{
+	width: 100%;
+}
+
+
+h2.section {
+font-family: klavikaBold;
+font-size: 2em;
+font-weight: bold;
+color: white;
+background: rgb(53, 53, 53);
+text-align: center;
+margin: 0px auto;
+padding: 0.3em;
+}
+
+a.button {
+margin-bottom: 2%;
+float: none;
+background: rgb(160, 160, 160);
+width: auto;
+}
+
+#nuevo_punto {
+display: none;
+}
+
+form {
+width: 459px;
+margin-top: 3%;
+margin-left: 10px;
+margin-bottom: 12%;
+height: auto;
+}
+
+h3.subsection {
+font-family: klavikaLight;
+font-size: 1.4em;
+color: white;
+background: rgb(53, 53, 53);
+text-align: center;
+padding: 0.2em;
+}
+
+.lista_info {
+margin-top: 1.7%;
+margin-left: 15px;
+margin-right: 20px;
+display: block;
+}
+
+ol {
+counter-reset: li;
+list-style: none;
+padding: 0;
+margin-bottom: 4em;
+padding-left: 10px;
+}
+
+.lista_info li {
+border-bottom: 2px dotted rgb(53, 53, 53);
+width: 100%;
+display: table;
+}
+
+a.arrow {
+position: relative;
+display: inline-table;
+width: auto;
+padding: .4em .4em .4em .8em;
+margin: .5em 0 .5em 2.5em;
+text-decoration: none;
+font-family: klavikaLight;
+font-size: 1.5em;
+font-weight: bold;
+color: #666;
+}
+
+.encabezado {
+text-decoration: none;
+font-family: klavikaBold;
+font-size: 1.5em;
+font-weight: bold;
+color: rgb(102, 102, 102);
+position: relative;
+display: block;
+padding: 0em 0.4em 0em 0.8em;
+margin: 0.5em 0px 0em 2.5em;
+}
+
+.arrow {
+text-align: justify;
+font-weight: bold;
+font-family: KlavikaBold;
+}
+
+a.arrow:before {
+content: counter(li);
+counter-increment: li;
+position: absolute;
+left: -2.5em;
+top: 50%;
+margin-top: -1em;
+background: #8EC926;
+height: 2em;
+width: 2em;
+line-height: 2.1em;
+text-align: center;
+font-weight: bold;
+}
+
+
+a.arrow:after {
+position: absolute;
+content: '';
+border: .5em solid transparent;
+left: -1em;
+top: 50%;
+margin-top: -.5em;
+left: -.5em;
+border-left-color: #8EC926;
+}
+
+.lista_info .delete {
+
+}
+
+.delete {
+cursor: pointer;
+float: right;
+color: rgb(231, 89, 87);
+font-size: 2em;
+padding: 0em 0.4em;
+margin-top: 2%;
+margin-right: 0px;
+top: -1.4em;
+}
+
+a {
+text-decoration: none;
+}
+
+.content_list {
+text-align: justify;
+position: relative;
+display: block;
+padding: 2% 0.4em 2% 0.8em;
+text-decoration: none;
+font-size: 1.5em;
+color: rgb(102, 102, 102);
+font-family: klavikaLight;
+margin: 0em 0em 0.5em 2.5em;
+}
+
+.edit {
+
+top: -1.4em;
+
+cursor: pointer;
+float: right;
+color: rgb(53, 53, 53);
+font-size: 2em;
+padding: 0em 0.4em;
+margin-top: 2%;
+margin-right: 0%;
+}

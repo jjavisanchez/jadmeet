@@ -1,0 +1,28 @@
+				<h3 class="subsection">Lista de Temas Abiertos almacenados</h3>
+		        <ol id="temas_abiertos" class="lista_info">
+		        	{% for tema_abierto in temas_abiertos %}
+	                      <li id="tema_abierto_{{ loop.index }}">
+	                          <a id="encabezado_tema_abierto_{{ loop.index }}" class="encabezado arrow bold">{{ tema_abierto.nombre }}</a>
+	                          <a onclick="eliminarTemaAbierto('{{ tema_abierto.id }}')" class='delete'><i class='icon-remove' onmouseover="this.className='icon-remove-sign'" onmouseout="this.className='icon-remove'"></i></a>
+	                          <a id="editar_tema_abierto_{{ loop.index }}" class='edit' onclick="editarTemaAbierto('{{ loop.index }}', '{{ tema_abierto.id }}')"><i id="figure_{{ loop.index }}" class="icon-pencil" onmouseover="this.className='icon-edit'" onmouseout="this.className='icon-pencil'"></i></a>
+	                          <a id="descripcion_tema_abierto_{{ loop.index }}" class="content_list">{{ tema_abierto.descripcion }}</a>
+	                          <a id="encabezado_solucion_tema_abierto_{{ loop.index }}" class="encabezado">Solución</a>
+	                          {% if(tema_abierto.solucion is empty) %}
+	                          	 <a id="solucion_tema_abierto_{{ loop.index }}" class="content_list">No se ha registrado ninguna solución</a>
+	                          {% else %}
+	                          	 <a id="solucion_tema_abierto_{{ loop.index }}" class="content_list">{{ tema_abierto.solucion }}</a>
+	                          {% endif %}
+	                          <a id="encabezado_responsable_tema_abierto_{{ loop.index }}" class="encabezado">Responsable</a>
+	                          <a id="responsable_tema_abierto_{{ loop.index }}" class="content_list">{{ tema_abierto.usuario }}</a>
+	                          <a id="encabezado_fecha_tema_abierto_{{ loop.index }}" class="encabezado">Fecha Límite</a>
+	                          <a id="fecha_tema_abierto_{{ loop.index }}" class="content_list">{{ tema_abierto.fechaLimite|date("m/d/Y") }}</a>
+	                          <a id="encabezado_resuelto_tema_abierto_{{ loop.index }}" class="encabezado">¿Resuelto?</a>
+	                          {% if(tema_abierto.finalizado) %}
+	                          	<a id="resuelto_tema_abierto_{{ loop.index }}" class="content_list">Si</a>
+	                          {% else %}
+	                          	<a id="resuelto_tema_abierto_{{ loop.index }}" class="content_list">No</a>
+	                          {% endif %}
+	                      </li>
+
+	                {% endfor %}
+		        </ol>

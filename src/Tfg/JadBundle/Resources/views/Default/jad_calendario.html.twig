@@ -1,0 +1,70 @@
+{% extends '::base.html.twig' %}
+
+{% block stylesheets %}
+{{parent()}}
+<link rel="stylesheet" href="{{asset('bundles/jad/css/jad_menu.css')}}" type="text/css" media="all" />
+<link rel="stylesheet" href="{{asset('css/fonts/font-awesome/css/font-awesome.css')}}">
+<link rel='stylesheet' href="{{asset('bundles/jad/css/fullcalendar.css')}}" type='text/css'/>
+{% endblock %}
+
+{% block js %}
+    {{ parent() }}
+    <script type='text/javascript' src="{{ asset('js/fullcalendar.js')}}"></script>
+
+{% endblock %}
+
+
+
+
+{% block menu %}
+<li><a href="{{path('home_usuario')}}"><span class="text">Home</span></a></li>
+<li><a href="{{path('jad_home',{'rolusuario':rol.slug,'nombreJad':jad.slug})}}"><span class="text">JAD Menú</span></a></li>
+<li><a href="#"><span class="text">Calendario</span></a></li>
+{% endblock %}
+
+          {% if is_granted('ROLE_USUARIO') %}
+          {% block log_out_bar %}
+                    {{app.user}}, {{rol.nombre}}
+                    <a href="{{ path('usuario_logout') }}">Cerrar sesión</a>
+           {% endblock %}
+          {% endif %}
+
+{% block main %}
+
+            <section class="container"><h3><span class="left ribbon"></span>Calendario del JAD<span class="right ribbon"></span></h3></section>
+
+            <div id='calendar'></div>
+
+{% endblock %}
+
+{% block javascripts %}
+ <script type="text/javascript">
+  $(document).ready(function() {
+
+    // page is now ready, initialize the calendar...
+
+    $('#calendar').fullCalendar({
+        // put your options and callbacks here
+        theme:true,
+        events: [
+        {
+            title  : 'Reunión con Victor',
+            start  : '2013-06-14'
+        },
+        {
+            title  : 'Workshops',
+            start  : '2013-06-17',
+            end    : '2013-06-20'
+        },
+        {
+            title  : 'event3',
+            start  : '2010-01-09 12:30:00',
+            allDay : false // will make the time show
+        }
+    ]
+    })
+
+});
+ </script>
+
+{% endblock %}

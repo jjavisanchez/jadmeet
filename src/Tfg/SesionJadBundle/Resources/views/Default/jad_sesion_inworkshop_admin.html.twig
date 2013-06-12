@@ -259,6 +259,7 @@
               }
             }
 
+
         	    function temasAbiertos(){
                 $('#contenido').load('{{ path('admin_window_temasAbiertos', { 'rolusuario': rol.slug, 'nombreJad': jad.slug, 'nombreSesion': sesion.slug } ) }}');
 
@@ -282,6 +283,16 @@
 
             }
 
+            function guardarCambiosTemaAbierto(id){
+              var $form = $('#edit_temaAbierto').serializeArray();
+
+              link = Routing.generate('admin_window_tema_abierto_editar',{ rolusuario:"{{rol.slug}}", nombreJad:"{{jad.slug}}", nombreSesion:"{{sesion.slug}}", id: id });
+
+              $.post(link, $form, function(data){
+                  $('#lista').html(data);
+              });
+            }
+
             function mostrarFormNuevoTema(){
               if( $('#nuevo_temaAbierto').css('display') == 'block' ){
                  $('#nuevo_temaAbierto').css('display','none');
@@ -293,7 +304,19 @@
               }
             }
 
-        	    function restricciones(){
+            function insertarTemaAbierto(){
+              var $form = $('#nuevo_temaAbierto').serializeArray();
+              $.post('{{ path('admin_window_temasAbiertos', { 'rolusuario': rol.slug, 'nombreJad': jad.slug, 'nombreSesion': sesion.slug } ) }}', $form, function(data){
+                  $('#contenido').html(data);
+              });
+            }
+
+            function eliminarTemaAbierto(id){
+              link = Routing.generate('admin_window_tema_abierto_eliminar',{ rolusuario:"{{rol.slug}}", nombreJad:"{{jad.slug}}", nombreSesion:"{{sesion.slug}}", id: id });
+              $('#lista').load(link);
+            }
+
+        	 function restricciones(){
                 $('#contenido').load('{{ path('admin_window_restricciones', { 'rolusuario': rol.slug, 'nombreJad': jad.slug, 'nombreSesion': sesion.slug } ) }}');
 
                 $('#menu > li > a').each(function(){
@@ -303,8 +326,52 @@
         			}
       			});
                 $('#restricciones').attr('class','select');
-
         		}
+
+            function mostrarFormNuevaRestriccion(){
+              if( $('#nueva_restriccion').css('display') == 'block' ){
+                 $('#nueva_restriccion').css('display','none');
+                 $('#form').html('Nueva Restricción');
+              }else
+              if( $('#nueva_restriccion').css('display') == 'none' ){
+                 $('#nueva_restriccion').css('display','block');
+                  $('#form').html('Cancelar');
+              }
+            }
+
+            function insertarRestriccion(){
+              var $form = $('#nueva_restriccion').serializeArray();
+              $.post('{{ path('admin_window_restricciones', { 'rolusuario': rol.slug, 'nombreJad': jad.slug, 'nombreSesion': sesion.slug } ) }}', $form, function(data){
+                  $('#contenido').html(data);
+              });
+            }
+
+            function editarRestriccion(id_list, id){
+              $('#figure_'+id_list).toggleClass("icon-save");
+              $('#figure_'+id_list).removeAttr("onmouseout");
+              $('#figure_'+id_list).removeAttr("onmouseover");
+
+              link = Routing.generate('admin_window_restriccion_editar',{ rolusuario:"{{rol.slug}}", nombreJad:"{{jad.slug}}", nombreSesion:"{{sesion.slug}}", id: id });
+
+              $('#restriccion_'+id_list).load(link);
+            }
+
+            function guardarCambiosRestriccion(id){
+              var $form = $('#edit_restriccion').serializeArray();
+
+              link = Routing.generate('admin_window_restriccion_editar',{ rolusuario:"{{rol.slug}}", nombreJad:"{{jad.slug}}", nombreSesion:"{{sesion.slug}}", id: id });
+
+              $.post(link, $form, function(data){
+                  $('#lista_de_restricciones').html(data);
+              });
+            }
+
+            function eliminarRestriccion(id){
+              link = Routing.generate('admin_window_restriccion_eliminar',{ rolusuario:"{{rol.slug}}", nombreJad:"{{jad.slug}}", nombreSesion:"{{sesion.slug}}", id: id });
+              $('#lista_de_restricciones').load(link);
+            }
+
+
 
         		function pasarTurno(id){
               var id = id;
@@ -364,7 +431,7 @@
                             break;
                         case 'remove.turn':
                         //Codigo comentado porque esta vista se actualiza con el propio controlador y el fichero
-                            /*turnos = JSON.parse(mensaje.turnos);
+                            turnos = JSON.parse(mensaje.turnos);
                             document.getElementById("result").innerHTML ="";
                             $.each(turnos, function(index, user){
                                 if(index == 0)
@@ -374,7 +441,7 @@
                                   li_class = 'icon-large icon-user';
                                 }
                                 document.getElementById("result").innerHTML += "<li class='" + li_class + "'><a>" + user.nombre + " " + user.apellidos + "</a></li>";
-                            });*/
+                            });
                             break;
                         case 'hide.screen':
                               break;
@@ -426,6 +493,18 @@
                         case 'edit.agreement':
                           break;
                         case 'remove.agreement':
+                          break;
+                        case 'new.openissue':
+                          break;
+                        case 'remove.openissue':
+                          break;
+                        case 'edit.openissue':
+                          break;
+                        case 'new.constraint':
+                          break;
+                        case 'remove.constraint':
+                          break;
+                        case 'edit.constraint':
                           break;
                         default:
                         alert('Evento desconocido');

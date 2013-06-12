@@ -1,0 +1,51 @@
+
+#barra_editar{
+	font-family: 'klavikaLight';
+	color: white;
+	text-align: right;
+	background-color: #353535;
+	width: 100%;
+	height: 10%;
+}
+
+.lcont{
+	float:left;
+	width: 31%;
+}
+
+.center{
+	margin:0 3% 0 3%;
+}
+
+#subida{
+	font-family: 'klavikaLight';
+	color: white;
+	text-align: right;
+	background-color: #353535;
+	border: none;
+	height: 10%;
+}
+
+#list_items{
+	list-style-type: none;
+padding: 0;
+float: left;
+background: #EA4F80;
+padding: 2.5%;
+width: 98%;
+min-height: 300px;
+max-height: 500px;
+overflow: scroll;
+}
+
+#list_items li{
+	font-family: 'klavikaLight';
+	color: black;
+	margin: 1% 0 1% 0;
+	padding: 1%;
+	font-size: 1.2em;
+}
+
+input[type="checkbox"]{
+	cursor : pointer;
+}

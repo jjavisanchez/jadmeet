@@ -4,6 +4,7 @@ namespace Tfg\UsuarioBundle\Controller;
 
 use Tfg\JadBundle\Entity\Jad;
 use Tfg\UsuarioBundle\Form\GestionHomeUsuario\jadsDeUsuarioType;
+use Tfg\JadBundle\Form\GestionJad\jadType;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -80,6 +81,20 @@ class DefaultController extends Controller
         return $this->render(
                              'UsuarioBundle:Default:registro.html.twig',
                              array('formulario' => $formulario->createView())
+                );
+       }
+
+       public function nuevojadAction(){
+
+            $peticion = $this->getRequest();
+            $jad = new Jad();
+
+            $formulario = $this->createForm(new JadType(), $jad);
+
+
+            return $this->render(
+                                    'JadBundle:Default:nuevo_jad.html.twig',
+                                    array('formulario' => $formulario->createView())
                 );
        }
 

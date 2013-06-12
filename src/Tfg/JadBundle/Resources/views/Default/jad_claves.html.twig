@@ -1,0 +1,195 @@
+{%extends '::base.html.twig'%}
+
+{% block stylesheets %}
+{{parent()}}
+  <link rel="stylesheet" href="{{asset('css/fonts/font-awesome/css/font-awesome.css')}}">
+  <link rel="stylesheet" href="{{asset('bundles/sesionjad/css/sesion_workshop.css')}}" type="text/css" media="all" />
+  <link rel="stylesheet" href="{{asset('bundles/jad/css/claves.css')}}" type="text/css" media="all" />
+{% endblock %}
+{% block js %}
+  {{parent()}}
+  <script type="text/javascript" src="{{asset('js/canvas-shapes.js')}}"></script>
+  <script type="text/javascript" src="{{asset('js/jquery.jsPlumb-1.3.16-all-min.js')}}"></script>
+  <script type="text/javascript" src="{{asset('js/jquery.jsPlumb-1.3.16-all.js')}}"></script>
+  <script type="text/javascript" src="{{asset('js/jquery.ui.touch-punch.min.js')}}"></script>
+
+  <script type="text/javascript" src="{{ asset('bundles/fosjsrouting/js/router.js') }}"></script>
+  <script type="text/javascript" src="{{ path('fos_js_routing_js', {"callback": "fos.Router.setData"}) }}"></script>
+{% endblock %}
+
+{% block menu %}
+	<li><a href="{{path('home_usuario')}}"><span class="text">Home</span></a></li>
+	<li><a href="{{path('jad_home',{'rolusuario':rol.slug,'nombreJad':jad.slug})}}"><span class="text">JAD Menú</span></a></li>
+	<li><a href="#"><span class="text">Claves JAD</span></a></li>
+{% endblock %}
+
+{% if is_granted('ROLE_USUARIO') %}
+  {% block log_out_bar %}
+
+            {{app.user}}, {{rol.nombre}}
+            <a href="{{ path('usuario_logout') }}">Cerrar sesión</a>
+   {% endblock %}
+{% endif %}
+
+{% block main %}
+
+ <section class="container"><h3><span class="left ribbon"></span>JAD : {{jad}}<span class="right ribbon"></span></h3></section>
+
+
+
+<nav id="navwrapper">
+<ul class="floatleft" id="nav">
+        <li><a id="acuerdos" class="current" onclick="acuerdos()">Acuerdos</a></li>
+        <li><a id="objetivos" onclick="objetivos()">Objetivos</a></li>
+        <li><a id="temasAbiertos" onclick="temasAbiertos()">Temas Abiertos</a></li>
+        <li> <a id="restricciones" onclick="restricciones()">Restricciones</a></li>
+<ul>
+<br class="clear" /></nav>
+
+<div id="contenido">
+		<div id="acuerdos">
+
+      <h2 class="section">Acuerdos</h2>
+      <div id="botones">
+
+            <a id="form" class="button" onclick="mostrarFormNuevoAcuerdo()">Nuevo Acuerdo</a>
+
+      </div>
+      <form id="nuevo_acuerdo" action="javascript:insertarAcuerdo()" method="POST" {{ form_enctype(form) }}>
+        <fieldset>
+          {{ form_label(form.nombre, 'Nombre') }}
+                  {{ form_errors(form.nombre) }}
+                  {{ form_widget(form.nombre,{ 'attr':{
+                      'placeholder':'Escribe un nombre para el Acuerdo'}}) }}
+
+                  {{ form_label(form.descripcion, 'Descripción') }}
+                  {{ form_errors(form.descripcion) }}
+                  {{ form_widget(form.descripcion,{ 'attr':{
+                      'placeholder':'Escribe una descripción para el Acuerdo'}}) }}
+        </fieldset>
+          {{ form_rest(form) }}
+          <input id="submit" type="submit" value="Crear Acuerdo" />
+      </form>
+      <h3 class="subsection">Lista Acuerdos almacenados</h3>
+          <ol id="lista_de_acuerdos" class="lista_info">
+            {% for acuerdo in acuerdos %}
+                      <li>
+                          <a id="encabezado_acuerdo_{{ loop.index }}" class="encabezado arrow">{{ acuerdo.nombre }}</a>
+                          <a onclick="eliminarAcuerdo('{{ acuerdo.id }}')" class='delete'><i class='icon-remove' onmouseover="this.className='icon-remove-sign'" onmouseout="this.className='icon-remove'"></i></a>
+                          <a id="editar_acuerdo_{{ loop.index }}" class='edit' onclick="editarAcuerdos('{{ loop.index }}', '{{ acuerdo.id }}')"><i id="figure_{{ loop.index }}" class="icon-pencil" onmouseover="this.className='icon-edit'" onmouseout="this.className='icon-pencil'"></i></a>
+                          <a id="descripcion_acuerdo_{{ loop.index }}" class="content_list">{{ acuerdo.descripcion }}</a>
+                      </li>
+
+                {% endfor %}
+          </ol>
+</div>
+<div style="clear:both;"></div>
+</div>
+{% endblock main %}
+
+{% block javascripts %}
+        <script type="text/javascript">
+
+			/* SCRIPT PARA CARGAR EL CONTENIDO DEL CONTENEDOR DE LAS DIFERENTES PESTAÑAS A TRAVES DE SYMFONY2*/
+
+  		function objetivos(){
+        $('#contenido').load('{{ path('jad_claves_objetivos', { 'rolusuario': rol.slug, 'nombreJad': jad.slug } ) }}');
+
+        $('#nav > li > a').each(function(){
+              if( $(this).attr('class') == "current"){
+                    $(this).removeAttr('class');
+              }
+          });
+          $('#objetivos').attr('class','current');
+  		}
+
+  		function acuerdos(){
+          $('#contenido').load('{{ path('jad_claves_acuerdos', { 'rolusuario': rol.slug, 'nombreJad': jad.slug } ) }}');
+
+          $('#nav > li > a').each(function(){
+              if( $(this).attr('class') == "current"){
+                    $(this).removeAttr('class');
+              }
+          });
+          $('#acuerdos').attr('class','current');
+      }
+
+
+      function editarAcuerdos(id_list, id){
+        $('#figure_'+id_list).toggleClass("icon-save");
+        $('#figure_'+id_list).removeAttr("onmouseout");
+        $('#figure_'+id_list).removeAttr("onmouseover");
+        $('#encabezado_acuerdo_'+id_list).attr('contenteditable','true');
+        $('#encabezado_acuerdo_'+id_list).addClass('li_textarea');
+        $('#descripcion_acuerdo_'+id_list).attr('contenteditable','true');
+        $('#descripcion_acuerdo_'+id_list).addClass('li_textarea');
+        $('#editar_acuerdo_'+id_list).attr('onclick','enviarEditarAcuerdo('+id_list+','+id+')');
+
+      }
+
+
+        function mostrarFormNuevoAcuerdo(){
+          if( $('#nuevo_acuerdo').css('display') == 'block' ){
+             $('#nuevo_acuerdo').css('display','none');
+             $('#form').html('Nuevo Acuerdo');
+          }else
+          if( $('#nuevo_acuerdo').css('display') == 'none' ){
+             $('#nuevo_acuerdo').css('display','block');
+              $('#form').html('Cancelar');
+          }
+        }
+
+
+  	    function temasAbiertos(){
+          $('#contenido').load('{{ path('jad_claves_temasAbiertos', { 'rolusuario': rol.slug, 'nombreJad': jad.slug } ) }}');
+
+          $('#nav > li > a').each(function(){
+              if( $(this).attr('class') == "current"){
+                    $(this).removeAttr('class');
+              }
+          });
+          $('#temasAbiertos').attr('class','current');
+        }
+
+
+
+
+        function mostrarFormNuevoTema(){
+          if( $('#nuevo_temaAbierto').css('display') == 'block' ){
+             $('#nuevo_temaAbierto').css('display','none');
+             $('#form').html('Nuevo Tema Abierto');
+          }else
+          if( $('#nuevo_temaAbierto').css('display') == 'none' ){
+             $('#nuevo_temaAbierto').css('display','block');
+              $('#form').html('Cancelar');
+          }
+        }
+
+
+
+      	 function restricciones(){
+              $('#contenido').load('{{ path('jad_claves_restricciones', { 'rolusuario': rol.slug, 'nombreJad': jad.slug } ) }}');
+
+              $('#nav > li > a').each(function(){
+                  if( $(this).attr('class') == "current"){
+                    $(this).removeAttr('class');
+                  }
+              });
+          $('#restricciones').attr('class','current');
+      }
+
+        function mostrarFormNuevaRestriccion(){
+          if( $('#nueva_restriccion').css('display') == 'block' ){
+             $('#nueva_restriccion').css('display','none');
+             $('#form').html('Nueva Restricción');
+          }else
+          if( $('#nueva_restriccion').css('display') == 'none' ){
+             $('#nueva_restriccion').css('display','block');
+              $('#form').html('Cancelar');
+          }
+        }
+
+
+        </script>
+
+    {% endblock %}

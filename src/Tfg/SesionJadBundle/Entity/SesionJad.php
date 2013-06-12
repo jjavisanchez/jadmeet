@@ -269,4 +269,8 @@ class SesionJad implements \Serializable
 
     }
 
+    public function __toString(){
+        return (string)$this->id;
+    }
+
 }
